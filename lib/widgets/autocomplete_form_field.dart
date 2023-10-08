@@ -27,7 +27,7 @@ class AutocompleteFormField<T extends BaseModel> extends StatelessWidget {
     return FormField<T>(
       validator: validator,
       onSaved: onSaved,
-      builder: (field) => RawAutocomplete<T>(
+      builder: (field) => Autocomplete<T>(
           optionsBuilder: optionsBuilder,
           onSelected: (option) => field.didChange(option),
           optionsViewBuilder: (context, onSelected, options) =>

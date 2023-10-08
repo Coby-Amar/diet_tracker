@@ -39,32 +39,53 @@ class CreateEntry extends StatelessWidget {
         return null;
       },
       builder: (field) {
-        return Row(
+        final errorColor = Theme.of(context).colorScheme.error;
+        final hasError = field.hasError;
+        return Column(
           children: [
-            Expanded(
-              child: AppAutocomplete<ProductModel>(
-                label: 'מוצר',
-                optionsBuilder: (textEditingValue) => products
-                    .where((product) =>
-                        product.name.contains(textEditingValue.text))
-                    .toList(),
-                onSelected: (option) => field.didChange(
-                  CreateEntryFormFieldValue(
-                    product: option,
-                    amount: field.value?.amount ?? 0,
+            Row(
+              children: [
+                Expanded(
+                  child: AppAutocomplete<ProductModel>(
+                    label: 'מוצר',
+                    errorText: hasError ? '' : null,
+                    optionsBuilder: (textEditingValue) => products
+                        .where((product) =>
+                            product.name.contains(textEditingValue.text))
+                        .toList(),
+                    onSelected: (option) => field.didChange(
+                      CreateEntryFormFieldValue(
+                        product: option,
+                        amount: field.value?.amount ?? 0,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            const Padding(padding: EdgeInsets.all(10)),
-            Expanded(
-              child: TextField(
-                decoration: const InputDecoration(labelText: 'כמות'),
-                onChanged: (newValue) => field.didChange(
-                  CreateEntryFormFieldValue(
-                    product: field.value?.product,
-                    amount: int.tryParse(newValue) ?? 0,
+                const Padding(padding: EdgeInsets.all(10)),
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: 'כמות',
+                      errorStyle: const TextStyle(height: 0),
+                      errorText: hasError ? '' : null,
+                    ),
+                    onChanged: (newValue) => field.didChange(
+                      CreateEntryFormFieldValue(
+                        product: field.value?.product,
+                        amount: int.tryParse(newValue) ?? 0,
+                      ),
+                    ),
                   ),
+                ),
+              ],
+            ),
+            Visibility(
+              visible: hasError,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  field.errorText ?? '',
+                  style: TextStyle(color: hasError ? errorColor : null),
                 ),
               ),
             ),

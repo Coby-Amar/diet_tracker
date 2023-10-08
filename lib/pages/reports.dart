@@ -1,7 +1,7 @@
 import 'package:diet_tracker/providers/models.dart';
 import 'package:diet_tracker/providers/reports.dart';
 import 'package:diet_tracker/widgets/create_edit_report.dart';
-import 'package:diet_tracker/widgets/entry_item.dart';
+import 'package:diet_tracker/widgets/report_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +12,7 @@ class DiariesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final provider = context.watch<ReportsProvider>();
-    // final reports = provider.reports;
+    final reports = provider.reports;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -25,35 +25,20 @@ class DiariesPage extends StatelessWidget {
             color: theme.primaryColorDark,
           ),
         ),
-        // actions: [
-
-        // ],
       ),
       body: GridView.count(
         crossAxisCount: 2,
-        children: List.generate(
-          100,
-          (index) => const EntryItem(),
-        ),
+        children: reports.map((report) => ReportCard(report: report)).toList(),
       ),
-      // body: ListView.separated(
-      //   itemBuilder: (context, index) => const DiaryItem(),
-      //   separatorBuilder: (context, index) => const Divider(),
-      //   itemCount: 20,
-      // ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final ReportModel? result = await showDialog(
+          final Report? result = await showDialog(
             context: context,
             builder: (context) => const CreateEditReportDialog(),
           );
-          // if (result != null) {
-          //   if (result.id != 0) {
-          //     provider.updateProduct(result);
-          //   } else {
-          //     provider.createProduct(result);
-          //   }
-          // }
+          if (result != null) {
+            provider.createReport(result);
+          }
         },
         backgroundColor: theme.primaryColorDark,
         shape: const CircleBorder(),

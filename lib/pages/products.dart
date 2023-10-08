@@ -17,7 +17,7 @@ class ProductsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Products',
+          'מוצרים',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 24,

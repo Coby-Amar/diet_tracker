@@ -23,8 +23,6 @@ class _CreateEditReportDialogState extends State<CreateEditReportDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final products = context.read<ProductsProvider>().products;
-    final validations = Validations();
     return Scaffold(
       appBar: AppBar(
         title: const Text('יצירת דוח'),
@@ -64,7 +62,6 @@ class _CreateEditReportDialogState extends State<CreateEditReportDialog> {
                                               if (entryData == null) return;
                                               _entryies.add(EntryModel(
                                                   product: entryData.product!,
-                                                  date: _date,
                                                   amount: entryData.amount));
                                             }),
                                           ),
@@ -110,7 +107,6 @@ class _CreateEditReportDialogState extends State<CreateEditReportDialog> {
                                 if (entryData == null) return;
                                 _entryies.add(EntryModel(
                                     product: entryData.product!,
-                                    date: _date,
                                     amount: entryData.amount));
                               }),
                             ),
@@ -131,9 +127,9 @@ class _CreateEditReportDialogState extends State<CreateEditReportDialog> {
                 }
                 _formKey.currentState?.save();
                 Navigator.of(context)
-                    .pop(ReportModel(date: _date, entries: _entryies));
+                    .pop(Report(date: _date, entries: _entryies));
               },
-              child: const Text('Login'),
+              child: const Text('צור'),
             )
           ],
         ),

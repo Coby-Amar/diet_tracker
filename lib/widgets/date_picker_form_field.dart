@@ -18,6 +18,7 @@ class DatePicketFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return FormField<DateTime>(
       onSaved: onSaved,
+      initialValue: _today,
       builder: (field) {
         return TextFormField(
           controller: _controller,

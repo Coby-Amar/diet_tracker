@@ -17,8 +17,6 @@ class ProductsProvider with ChangeNotifier {
   loadProducts() async {
     final db = await DBHelper().database;
     final productsMaps = await db.query(table);
-    print('productsMaps: ');
-    print(productsMaps);
     products = productsMaps.map((e) => ProductModel.fromMap(e)).toList();
     notifyListeners();
   }
@@ -30,7 +28,7 @@ class ProductsProvider with ChangeNotifier {
             ${BaseModel.createdAtColumn} TEXT NOT NULL,
             ${BaseModel.updatedAtColumn} TEXT NOT NULL,
             ${ProductModel.imageColumn} TEXT DEFAULT NULL,
-            ${ProductModel.nameColumn} TEXT NOT NULL,
+            ${ProductModel.nameColumn} TEXT NOT NULL UNIQUE,
             ${ProductModel.amountColumn} INTEGER NOT NULL,
             ${ProductModel.carbohydrateColumn} INTEGER NOT NULL,
             ${ProductModel.proteinColumn} INTEGER NOT NULL,

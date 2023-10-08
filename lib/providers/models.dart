@@ -1,12 +1,11 @@
-abstract class ModelMethods {
+abstract class Model {
+  const Model();
+  Model.fromMap(Map<String, dynamic> map);
   String get toDisplayString;
+  Map<String, Object?> toMap();
 }
 
-/// ----------------------------------------------------------------------------
-/// ProductModel extends BaseModel
-/// ----------------------------------------------------------------------------
-
-abstract class BaseModel implements ModelMethods {
+class BaseModel extends Model {
   static const String idColumn = '_id';
   static const String createdAtColumn = '_created_at';
   static const String updatedAtColumn = '_updated_at';
@@ -25,6 +24,7 @@ abstract class BaseModel implements ModelMethods {
         createdAt = DateTime.parse(map[createdAtColumn]),
         updatedAt = DateTime.parse(map[updatedAtColumn]);
 
+  @override
   Map<String, Object?> toMap() {
     final map = {
       updatedAtColumn: DateTime.now().toUtc().toString(),
@@ -34,6 +34,10 @@ abstract class BaseModel implements ModelMethods {
     }
     return map;
   }
+
+  @override
+  // TODO: implement toDisplayString
+  String get toDisplayString => throw UnimplementedError();
 }
 
 /// ----------------------------------------------------------------------------
@@ -54,6 +58,7 @@ class ProductModel extends BaseModel {
   final int carbohydrate;
   final int protein;
   final int fat;
+
   const ProductModel({
     id = 0,
     DateTime? createdAt,
@@ -100,19 +105,17 @@ class ProductModel extends BaseModel {
 
 class EntryModel extends BaseModel {
   static const String table = 'entries';
+  static const String productKey = 'product';
   static const String productIdColumn = '_product_id';
-  static const String productColumn = 'product';
-  static const String dateColumn = '_date';
   static const String amountColumn = '_amount';
   final ProductModel product;
-  final DateTime date;
   final int amount;
+
   const EntryModel({
     id = 0,
     createdAt,
     updatedAt,
     required this.product,
-    required this.date,
     required this.amount,
   })  : assert(amount > 0),
         super(
@@ -134,15 +137,13 @@ class EntryModel extends BaseModel {
   }
 
   @override
-  Map<String, dynamic> toMap() => {
-        ...super.toMap(),
-        dateColumn: date,
-        amountColumn: amount,
-      };
+  Map<String, dynamic> toMap() =>
+      {...super.toMap(), amountColumn: amount, productIdColumn: product.id};
 
   EntryModel.fromMap(Map<String, dynamic> map)
-      : product = map[productIdColumn],
-        date = map[dateColumn],
+      : product = map[productKey] is ProductModel
+            ? map[productKey]
+            : ProductModel.fromMap(map[productKey]),
         amount = map[amountColumn],
         super.fromMap(map);
 
@@ -151,15 +152,27 @@ class EntryModel extends BaseModel {
       'מוצר ${product.name}, פחממות: $carbohydrate, חלבון: $protein, שומן: $fat';
 }
 
-class ReportModel implements ModelMethods {
+class Report {
+  static const String table = '_reports';
+  static const String dateColumn = '_date';
+  static const String entryKey = 'entries';
+  static const String entryColumn = '_entry';
+  static const String entryIdColumn = '_entry_id';
   final DateTime date;
   final List<EntryModel> entries;
-  const ReportModel({
+
+  const Report({
     required this.date,
     required this.entries,
   });
 
-  @override
-  String get toDisplayString =>
-      entries.map((e) => e.toDisplayString).toString();
+  Report.fromMap(Map<String, dynamic> map)
+      : date = DateTime.parse(map[dateColumn]),
+        entries = map[entryKey] is Iterable
+            ? (map[entryKey] as Iterable<EntryModel>).toList()
+            : List.from(map[entryKey])
+                .map((e) => EntryModel.fromMap(e))
+                .toList();
+
+  String get formattedDate => '${date.day}/${date.month}/${date.year}';
 }
