@@ -1,5 +1,8 @@
+import 'package:diet_tracker/pages/settings.dart';
+import 'package:diet_tracker/providers/entries.dart';
 import 'package:diet_tracker/providers/reports.dart';
 import 'package:diet_tracker/providers/products.dart';
+import 'package:diet_tracker/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,9 +16,13 @@ void main() async {
         create: (_) => ProductsProvider(),
         lazy: false,
       ),
-      ChangeNotifierProvider(
-        create: (_) => ReportsProvider(),
+      Provider(
+        create: (_) => EntriesProvider(),
         lazy: false,
+      ),
+      ChangeNotifierProxyProvider<EntriesProvider, ReportsProvider>(
+        create: (_) => ReportsProvider(null),
+        update: (_, entries, __) => ReportsProvider(entries),
       ),
     ],
     child: const MyApp(),
@@ -33,11 +40,10 @@ class MyApp extends StatelessWidget {
         child: child!,
       ),
       home: const AppPage(),
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
-        scaffoldBackgroundColor: Colors.blueGrey,
-        useMaterial3: true,
-      ),
+      theme: theme,
+      routes: {
+        'settings': (context) => const SettingsPage(),
+      },
     );
   }
 }

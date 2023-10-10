@@ -36,7 +36,6 @@ class BaseModel extends Model {
   }
 
   @override
-  // TODO: implement toDisplayString
   String get toDisplayString => throw UnimplementedError();
 }
 
@@ -152,22 +151,47 @@ class EntryModel extends BaseModel {
       'מוצר ${product.name}, פחממות: $carbohydrate, חלבון: $protein, שומן: $fat';
 }
 
+enum Total {
+  carbohydrates,
+  proteins,
+  fats,
+}
+
 class Report {
   static const String table = '_reports';
   static const String dateColumn = '_date';
   static const String entryKey = 'entries';
   static const String entryColumn = '_entry';
-  static const String entryIdColumn = '_entry_id';
+
   final DateTime date;
   final List<EntryModel> entries;
+  late final double carbohydrates;
+  late final double proteins;
+  late final double fats;
 
-  const Report({
+  Report({
     required this.date,
     required this.entries,
-  });
+  }) {
+    double carbohydrates = 0;
+    double proteins = 0;
+    double fats = 0;
+    for (final entry in entries) {
+      carbohydrates += entry.carbohydrate;
+      proteins += entry.protein;
+      fats += entry.fat;
+    }
+    this.carbohydrates = carbohydrates;
+    this.proteins = proteins;
+    this.fats = fats;
+  }
+
+  get formattedTotal {
+    return 'פחממות = ${carbohydrates.toStringAsFixed(1)}, חלבון = ${proteins.toStringAsFixed(1)}, שומן = ${fats.toStringAsFixed(1)}';
+  }
 
   Report.fromMap(Map<String, dynamic> map)
-      : date = DateTime.parse(map[dateColumn]),
+      : date = map[dateColumn],
         entries = map[entryKey] is Iterable
             ? (map[entryKey] as Iterable<EntryModel>).toList()
             : List.from(map[entryKey])

@@ -1,56 +1,41 @@
+import 'package:diet_tracker/dialogs/create_product.dart';
+import 'package:diet_tracker/mixins/dialogs.dart';
 import 'package:diet_tracker/providers/models.dart';
-import 'package:diet_tracker/widgets/create_edit_product.dart';
+import 'package:diet_tracker/widgets/appbar_themed.dart';
+import 'package:diet_tracker/widgets/floating_add_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:diet_tracker/providers/products.dart';
 import 'package:diet_tracker/widgets/product_item.dart';
 
-class ProductsPage extends StatelessWidget {
+class ProductsPage extends StatelessWidget with Dialogs {
   const ProductsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final provider = context.watch<ProductsProvider>();
     final products = provider.products;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'מוצרים',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-            color: theme.primaryColorDark,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: theme.primaryColorLight,
+      appBar: const AppBarThemed(
+        title: 'מוצרים',
+        showActions: true,
       ),
-      body: ListView.builder(
+      body: ListView.separated(
         itemBuilder: (context, index) => ProductItem(product: products[index]),
         itemCount: products.length,
+        separatorBuilder: (context, index) => const Divider(),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingAddButton(
         onPressed: () async {
-          final ProductModel? result = await showDialog(
-            context: context,
-            builder: (context) => const CreateEditProductDialog(),
+          final ProductModel? result = await openDialog(
+            context,
+            const CreateProductDialog(),
           );
           if (result != null) {
-            if (result.id != 0) {
-              provider.updateProduct(result);
-            } else {
-              provider.createProduct(result);
-            }
+            provider.createProduct(result);
           }
         },
-        backgroundColor: theme.primaryColorDark,
-        shape: const CircleBorder(),
-        child: Icon(
-          Icons.add,
-          color: theme.primaryColorLight,
-        ),
       ),
     );
   }

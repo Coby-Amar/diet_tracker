@@ -64,6 +64,7 @@ class CreateEntry extends StatelessWidget {
                 const Padding(padding: EdgeInsets.all(10)),
                 Expanded(
                   child: TextField(
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'כמות',
                       errorStyle: const TextStyle(height: 0),

@@ -11,7 +11,7 @@ class AppPage extends StatefulWidget {
 
 class _AppPageState extends State<AppPage> {
   int currentPageIndex = 0;
-  final List<Widget> pages = [const DiariesPage(), const ProductsPage()];
+  final List<Widget> pages = [const ReportsPage(), const ProductsPage()];
 
   @override
   Widget build(BuildContext context) {

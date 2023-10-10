@@ -1,3 +1,4 @@
+import 'package:diet_tracker/providers/entries.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -26,9 +27,10 @@ class DBHelper {
     return openDatabase(
       join(dbpath, _databaseName),
       version: _databaseVersion,
-      onCreate: (db, version) {
-        ProductsProvider.onCreate(db, version);
-        ReportsProvider.onCreate(db, version);
+      onCreate: (db, version) async {
+        await ProductsProvider.onCreate(db, version);
+        await EntriesProvider.onCreate(db, version);
+        await ReportsProvider.onCreate(db, version);
       },
     );
   }
