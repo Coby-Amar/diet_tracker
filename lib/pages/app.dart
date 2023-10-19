@@ -1,6 +1,9 @@
+import 'package:diet_tracker/pages/login.dart';
 import 'package:diet_tracker/pages/reports.dart';
 import 'package:diet_tracker/pages/products.dart';
+import 'package:diet_tracker/providers/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AppPage extends StatefulWidget {
   const AppPage({super.key});

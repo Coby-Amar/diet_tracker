@@ -1,6 +1,8 @@
+import 'package:diet_tracker/pages/login.dart';
 import 'package:diet_tracker/pages/settings.dart';
-import 'package:diet_tracker/providers/entries.dart';
-import 'package:diet_tracker/providers/reports.dart';
+import 'package:diet_tracker/pages/splash.dart';
+import 'package:diet_tracker/providers/api.dart';
+import 'package:diet_tracker/providers/auth.dart';
 import 'package:diet_tracker/providers/products.dart';
 import 'package:diet_tracker/theme.dart';
 import 'package:flutter/material.dart';
@@ -12,22 +14,21 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MultiProvider(
     providers: [
+      Provider(
+        create: (_) => APIProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => AuthProvider(),
+      ),
       ChangeNotifierProvider(
         create: (_) => ProductsProvider(),
-        lazy: false,
-      ),
-      Provider(
-        create: (_) => EntriesProvider(),
-        lazy: false,
-      ),
-      ChangeNotifierProxyProvider<EntriesProvider, ReportsProvider>(
-        create: (_) => ReportsProvider(null),
-        update: (_, entries, __) => ReportsProvider(entries),
       ),
     ],
     child: const MyApp(),
   ));
 }
+
+final navigatorKey = GlobalKey<NavigatorState>(debugLabel: "navigatorKey");
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -35,13 +36,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       builder: (context, child) => Directionality(
         textDirection: TextDirection.rtl,
         child: child!,
       ),
-      home: const AppPage(),
       theme: theme,
+      initialRoute: 'splash',
       routes: {
+        'splash': (context) => const SplashPage(),
+        'login': (context) => const LoginPage(),
+        'home': (context) => const AppPage(),
         'settings': (context) => const SettingsPage(),
       },
     );

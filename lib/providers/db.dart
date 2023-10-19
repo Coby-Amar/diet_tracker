@@ -1,9 +1,12 @@
-import 'package:diet_tracker/providers/entries.dart';
+import 'dart:io';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:http/http.dart';
 
 import 'package:diet_tracker/providers/reports.dart';
 import 'package:diet_tracker/providers/products.dart';
+import 'package:diet_tracker/providers/entries.dart';
 
 class DBHelper {
   static const _databaseName = "diet_tracker.db";

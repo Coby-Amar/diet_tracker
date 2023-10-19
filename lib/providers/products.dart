@@ -1,4 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:diet_tracker/dio.dart';
+import 'package:diet_tracker/providers/api.dart';
+import 'package:diet_tracker/providers/auth.dart';
 
 import 'package:diet_tracker/providers/db.dart';
 import 'package:diet_tracker/providers/models.dart';
@@ -7,7 +11,6 @@ import 'package:sqflite/sqflite.dart';
 
 class ProductsProvider with ChangeNotifier {
   static const String table = 'products';
-
   List<ProductModel> products = [];
 
   ProductsProvider() {
@@ -15,10 +18,18 @@ class ProductsProvider with ChangeNotifier {
   }
 
   loadProducts() async {
-    final db = await DBHelper().database;
-    final productsMaps = await db.query(table);
-    products = productsMaps.map((e) => ProductModel.fromMap(e)).toList();
-    notifyListeners();
+    try {
+      final response = await dioClient.get("products");
+      if (response.data != null) {
+        products = (response.data as Iterable)
+            .map((e) => ProductModel.fromMap(e))
+            .toList();
+        notifyListeners();
+      }
+    } catch (e) {
+      print(e);
+      return;
+    }
   }
 
   static FutureOr<void> onCreate(Database db, int version) async {

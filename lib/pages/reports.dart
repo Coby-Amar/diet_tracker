@@ -13,8 +13,9 @@ class ReportsPage extends StatelessWidget with Dialogs {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<ReportsProvider>();
-    final reports = provider.reports;
+    // final provider = context.watch<ReportsProvider>();
+    // final reports = provider.reports;
+    final reports = [];
     return Scaffold(
       appBar: const AppBarThemed(
         title: 'דוחות',
@@ -32,7 +33,7 @@ class ReportsPage extends StatelessWidget with Dialogs {
             const CreateReportDialog(),
           );
           if (result != null) {
-            provider.createReport(result);
+            // provider.createReport(result);
           }
         },
       ),
