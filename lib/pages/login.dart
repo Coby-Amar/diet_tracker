@@ -16,17 +16,6 @@ class _LoginPageState extends State<LoginPage> {
   String password = '';
 
   @override
-  void initState() {
-    logginCheck();
-    super.initState();
-  }
-
-  logginCheck() {
-    final authProvider = context.read<AuthProvider>();
-    authProvider.checkIfLoggedin();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final authProvider = context.read<AuthProvider>();
     final theme = Theme.of(context);
@@ -68,13 +57,18 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     final result = _formKey.currentState?.validate();
                     if (result == null || !result) {
                       return;
                     }
                     _formKey.currentState?.save();
-                    authProvider.login(username, password);
+                    final navigator = Navigator.of(context);
+                    final response =
+                        await authProvider.login(username, password);
+                    if (response) {
+                      navigator.pushReplacementNamed("home");
+                    }
                   },
                   child: const Text("התחבר"),
                 ),

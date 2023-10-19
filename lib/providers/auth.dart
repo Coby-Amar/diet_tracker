@@ -22,13 +22,14 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> login(String username, String password) async {
+  Future<bool> login(String username, String password) async {
     try {
       await APIProvider.login(username, password);
       isLoggedIn = true;
       notifyListeners();
+      return true;
     } catch (e) {
-      print(e);
+      return false;
     }
   }
 

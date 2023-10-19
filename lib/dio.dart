@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:diet_tracker/main.dart';
 import 'package:diet_tracker/providers/auth.dart';
@@ -8,20 +6,21 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:provider/provider.dart';
 
 final dio = Dio();
-final cookieJar = CookieJar();
+final cookieJar = PersistCookieJar();
 
 class AutoLogoutInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == 401) {
+      navigatorKey.currentState?.pushReplacementNamed("login");
       cookieJar.deleteAll();
-      final authProvider = Provider.of<AuthProvider>(
+      Provider.of<AuthProvider>(
         navigatorKey.currentContext!,
         listen: false,
-      );
-      authProvider.logout(true);
+      ).logout(true);
+    } else {
+      super.onError(err, handler);
     }
-    super.onError(err, handler);
   }
 }
 
