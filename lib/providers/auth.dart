@@ -5,16 +5,20 @@ class AuthProvider with ChangeNotifier {
   String userId = '';
   bool isLoggedIn = false;
 
-  AuthProvider();
+  AuthProvider() {
+    checkIfLoggedin();
+  }
 
-  Future<void> checkIfLoggedin() async {
+  Future<bool> checkIfLoggedin() async {
     try {
       await APIProvider.healthCheck();
       isLoggedIn = true;
       notifyListeners();
+      return true;
     } catch (e) {
       isLoggedIn = false;
       notifyListeners();
+      return false;
     }
   }
 

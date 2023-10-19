@@ -11,13 +11,13 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isLoggedIn =
-        context.select<AuthProvider, bool>((provider) => provider.isLoggedIn);
+    final navigation = Navigator.of(context);
+    final authProvider = context.read<AuthProvider>();
     Future.delayed(
-      const Duration(milliseconds: 500),
-      () {
-        final navigation = Navigator.of(context);
-        if (isLoggedIn) {
+      const Duration(milliseconds: 700),
+      () async {
+        final result = await authProvider.checkIfLoggedin();
+        if (result) {
           navigation.pushReplacementNamed("home");
         } else {
           navigation.pushReplacementNamed("login");
