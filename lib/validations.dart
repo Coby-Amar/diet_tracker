@@ -1,4 +1,4 @@
-import 'package:diet_tracker/providers/models.dart';
+import 'package:diet_tracker/resources/models.dart';
 
 typedef ValidationFunction<T> = String? Function(T? value);
 
@@ -22,7 +22,7 @@ class Validations {
       };
 
   String? requiredModel<T extends BaseModel>(T? value) =>
-      value == null || value.id == 0 ? 'שדה זה חייב להיות מלא' : null;
+      value == null || value.id.isEmpty ? 'שדה זה חייב להיות מלא' : null;
 
   String? required(String? value) =>
       value?.isEmpty ?? true ? 'שדה זה חייב להיות מלא' : null;

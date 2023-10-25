@@ -1,4 +1,4 @@
-import 'package:diet_tracker/providers/auth.dart';
+import 'package:diet_tracker/resources/stores/auth.dart';
 import 'package:diet_tracker/widgets/appbar_themed.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,8 +17,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.read<AuthProvider>();
     final theme = Theme.of(context);
+    final authStore = context.read<AuthStore>();
     return Scaffold(
       appBar: const AppBarThemed(
         title: 'Login',
@@ -28,30 +28,45 @@ class _LoginPageState extends State<LoginPage> {
           key: _formKey,
           child: Column(
             children: [
-              Container(
-                color: theme.cardColor,
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      initialValue: "cobyamar@gmail.com",
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        label: Text("שם משתמש/מייל"),
+              Expanded(
+                child: Container(
+                  color: theme.cardColor,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        initialValue: "cobyamar@gmail.com",
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          label: Text("שם משתמש/מייל"),
+                        ),
+                        onSaved: (newValue) =>
+                            setState(() => username = newValue!),
                       ),
-                      onSaved: (newValue) =>
-                          setState(() => username = newValue!),
-                    ),
-                    TextFormField(
-                      initialValue: "123456789",
-                      keyboardType: TextInputType.visiblePassword,
-                      decoration: const InputDecoration(
-                        label: Text("סיסמה"),
+                      TextFormField(
+                        initialValue: "123456789",
+                        keyboardType: TextInputType.visiblePassword,
+                        decoration: const InputDecoration(
+                          label: Text("סיסמה"),
+                        ),
+                        onSaved: (newValue) =>
+                            setState(() => password = newValue!),
                       ),
-                      onSaved: (newValue) =>
-                          setState(() => password = newValue!),
-                    ),
-                  ],
+                      Row(
+                        children: [
+                          const Text("משתמש חדש?"),
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.of(context).pushNamed("register"),
+                            child: Text(
+                              "הרשם",
+                              style: TextStyle(color: theme.primaryColorDark),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Padding(
@@ -64,9 +79,8 @@ class _LoginPageState extends State<LoginPage> {
                     }
                     _formKey.currentState?.save();
                     final navigator = Navigator.of(context);
-                    final response =
-                        await authProvider.login(username, password);
-                    if (response) {
+                    await authStore.login(username, password);
+                    if (authStore.loggedIn) {
                       navigator.pushReplacementNamed("home");
                     }
                   },

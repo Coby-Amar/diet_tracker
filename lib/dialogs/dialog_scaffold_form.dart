@@ -1,13 +1,14 @@
+import 'package:diet_tracker/resources/models.dart';
 import 'package:diet_tracker/validations.dart';
 import 'package:flutter/material.dart';
 
 typedef FormBuilder = Widget Function(ThemeData theme, Validations validations);
-typedef FormOnSucces<T> = T Function();
+typedef FormOnSuccess<T extends Model> = T Function();
 
 class DialogScaffoldForm extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final FormBuilder formBuilder;
-  final FormOnSucces onSuccess;
+  final FormOnSuccess onSuccess;
   final String title;
   final String formSubmitText;
   DialogScaffoldForm({
@@ -37,16 +38,19 @@ class DialogScaffoldForm extends StatelessWidget {
                 child: formBuilder(theme, Validations()),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                final result = _formKey.currentState?.validate();
-                if (result == null || !result) {
-                  return;
-                }
-                _formKey.currentState?.save();
-                Navigator.of(context).pop(onSuccess());
-              },
-              child: Text(formSubmitText),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  final result = _formKey.currentState?.validate();
+                  if (result == null || !result) {
+                    return;
+                  }
+                  _formKey.currentState?.save();
+                  Navigator.of(context).pop(onSuccess());
+                },
+                child: Text(formSubmitText),
+              ),
             )
           ],
         ),

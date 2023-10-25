@@ -1,10 +1,9 @@
-import 'package:diet_tracker/widgets/app_autocomplete.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:diet_tracker/validations.dart';
-import 'package:diet_tracker/providers/models.dart';
-import 'package:diet_tracker/providers/products.dart';
+import 'package:diet_tracker/resources/stores/products.dart';
+import 'package:diet_tracker/widgets/app_autocomplete.dart';
+import 'package:diet_tracker/resources/models.dart';
 
 class CreateEntryFormFieldValue {
   ProductModel? product;
@@ -15,15 +14,17 @@ class CreateEntryFormFieldValue {
 class CreateEntry extends StatelessWidget {
   final DateTime date;
   final void Function(CreateEntryFormFieldValue? entryData) onSaved;
+  final void Function(BuildContext) onDelete;
   const CreateEntry({
     super.key,
     required this.date,
     required this.onSaved,
+    required this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
-    final products = context.read<ProductsProvider>().products;
+    final products = context.read<ProductsStore>().products;
     return FormField<CreateEntryFormFieldValue>(
       onSaved: onSaved,
       validator: (value) {

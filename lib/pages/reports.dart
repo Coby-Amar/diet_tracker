@@ -1,11 +1,12 @@
 import 'package:diet_tracker/dialogs/create_report.dart';
 import 'package:diet_tracker/mixins/dialogs.dart';
-import 'package:diet_tracker/providers/models.dart';
-import 'package:diet_tracker/providers/reports.dart';
+import 'package:diet_tracker/resources/models.dart';
+import 'package:diet_tracker/resources/stores/reports.dart';
 import 'package:diet_tracker/widgets/appbar_themed.dart';
 import 'package:diet_tracker/widgets/floating_add_button.dart';
 import 'package:diet_tracker/widgets/report_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 class ReportsPage extends StatelessWidget with Dialogs {
@@ -13,26 +14,32 @@ class ReportsPage extends StatelessWidget with Dialogs {
 
   @override
   Widget build(BuildContext context) {
-    // final provider = context.watch<ReportsProvider>();
-    // final reports = provider.reports;
-    final reports = [];
+    final reportsStore = context.read<ReportsStore>();
+    final reports = reportsStore.reports;
     return Scaffold(
       appBar: const AppBarThemed(
         title: 'דוחות',
         showActions: true,
       ),
-      body: ListView.separated(
-        itemBuilder: (context, index) => ReportItem(report: reports[index]),
-        itemCount: reports.length,
-        separatorBuilder: (context, index) => const Divider(),
-      ),
+      body: Observer(
+          builder: (_) => ListView.separated(
+                itemBuilder: (context, index) => ReportItem(
+                  onEdit: (report) {},
+                  onUpdate: (report) {},
+                  onDelete: (report) => reportsStore.delete(report.id),
+                  report: reports[index],
+                ),
+                itemCount: reports.length,
+                separatorBuilder: (context, index) => const Divider(),
+              )),
       floatingActionButton: FloatingAddButton(
         onPressed: () async {
-          final Report? result = await openDialog(
+          final ReportWithEntries? result = await openDialog(
             context,
             const CreateReportDialog(),
           );
           if (result != null) {
+            reportsStore.create(result);
             // provider.createReport(result);
           }
         },

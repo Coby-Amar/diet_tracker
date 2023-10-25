@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:diet_tracker/providers/models.dart';
+import 'package:diet_tracker/resources/models.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 
 class AppAutocomplete<T extends BaseModel> extends StatelessWidget {

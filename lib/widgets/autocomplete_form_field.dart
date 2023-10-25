@@ -1,9 +1,8 @@
 import 'dart:async';
 
-import 'package:diet_tracker/providers/models.dart';
+import 'package:diet_tracker/resources/models.dart';
 import 'package:diet_tracker/validations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 class AutocompleteFormField<T extends BaseModel> extends StatelessWidget {
   final String label;
@@ -69,7 +68,7 @@ class _AutocompleteOption<T extends BaseModel> extends StatelessWidget {
             shrinkWrap: true,
             itemCount: options.length,
             separatorBuilder: (context, index) => const Divider(),
-            itemBuilder: (context, index) => Text('test'
+            itemBuilder: (context, index) => const Text('test'
                 // onTap: () => onSelected(options.elementAt(index)),
                 // child: Text('test'),
                 // child: Builder(builder: (BuildContext context) {

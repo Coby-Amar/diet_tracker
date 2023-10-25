@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:diet_tracker/dialogs/dialog_scaffold_form.dart';
-import 'package:diet_tracker/providers/models.dart';
+import 'package:diet_tracker/resources/models.dart';
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';

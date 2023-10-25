@@ -1,8 +1,8 @@
-import 'package:diet_tracker/providers/models.dart';
+import 'package:diet_tracker/resources/models.dart';
 import 'package:flutter/material.dart';
 
 class ReportCard extends StatelessWidget {
-  final Report report;
+  final ReportModel report;
   const ReportCard({
     super.key,
     required this.report,
@@ -26,15 +26,15 @@ class ReportCard extends StatelessWidget {
             ),
           ),
           Text(
-            'פחממות = ${report.carbohydrates.toStringAsFixed(1)}',
+            'פחממות = ${report.carbohydratesTotal.toStringAsFixed(1)}',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(
-            'חלבון = ${report.proteins.toStringAsFixed(1)}',
+            'חלבון = ${report.proteinsTotal.toStringAsFixed(1)}',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           Text(
-            'שומן = ${report.fats.toStringAsFixed(1)}',
+            'שומן = ${report.fatsTotal.toStringAsFixed(1)}',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ],
