@@ -1,7 +1,7 @@
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:diet_tracker/main.dart';
-import 'package:diet_tracker/resources/models.dart';
-import 'package:diet_tracker/resources/stores/auth.dart';
+import 'package:diet_tracker/app.dart';
+import 'package:diet_tracker/resources/models/create.dart';
+import 'package:diet_tracker/resources/stores/info.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:provider/provider.dart';
@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 class ModelToJsonInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    if (options.data is Model) {
-      options.data = (options.data as Model).toMap();
+    if (options.data is CreationModel) {
+      options.data = (options.data as CreationModel).toMap();
     }
     super.onRequest(options, handler);
   }
@@ -22,7 +22,7 @@ class AutoLogoutInterceptor extends Interceptor {
     if (err.response?.statusCode == 401) {
       DioClient().deleteAllCookies();
       final authStore =
-          Provider.of<AuthStore>(navigatorKey.currentContext!, listen: false);
+          Provider.of<InfoStore>(navigatorKey.currentContext!, listen: false);
       if (authStore.loggedIn) {
         authStore.logout();
       }

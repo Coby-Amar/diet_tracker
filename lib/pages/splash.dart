@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:diet_tracker/resources/stores/auth.dart';
+import 'package:diet_tracker/resources/stores/info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
 
-  FutureOr<dynamic> Function() authCheck(authStore, navigation) => () async {
-        await authStore.checkIfLoggedIn();
-        if (authStore.loggedIn) {
+  FutureOr<dynamic> Function() authCheck(infoStore, navigation) => () async {
+        await infoStore.getUser();
+        if (infoStore.loggedIn) {
           navigation.pushReplacementNamed("home");
         }
       };
@@ -19,10 +18,10 @@ class SplashPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final navigation = Navigator.of(context);
-    final authStore = context.read<AuthStore>();
+    final infoStore = context.read<InfoStore>();
     Future.delayed(
       const Duration(milliseconds: 700),
-      authCheck(authStore, navigation),
+      authCheck(infoStore, navigation),
     );
     return Container(
       color: theme.primaryColorLight,

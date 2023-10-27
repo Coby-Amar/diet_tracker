@@ -2,16 +2,16 @@ import 'package:diet_tracker/pages/reports.dart';
 import 'package:diet_tracker/pages/products.dart';
 import 'package:flutter/material.dart';
 
-class AppPage extends StatefulWidget {
-  const AppPage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<AppPage> createState() => _AppPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _AppPageState extends State<AppPage> {
+class _HomePageState extends State<HomePage> {
   int currentPageIndex = 0;
-  final List<Widget> pages = [const ReportsPage(), const ProductsPage()];
+  final List<Widget> pages = [const ProductsPage(), const ReportsPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +28,13 @@ class _AppPageState extends State<AppPage> {
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'דוחות',
-          ),
-          NavigationDestination(
             icon: Icon(Icons.storage),
             label: 'מוצרים',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.summarize_outlined),
+            icon: Icon(Icons.summarize_outlined),
+            label: 'דוחות',
           ),
         ],
       ),

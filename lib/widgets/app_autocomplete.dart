@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:diet_tracker/resources/models.dart';
+import 'package:diet_tracker/resources/models/display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-class AppAutocomplete<T extends BaseModel> extends StatelessWidget {
+class AppAutocomplete<T extends AutoCompleteModel> extends StatelessWidget {
   final String label;
   final void Function(T option)? onSelected;
   final FutureOr<Iterable<T>> Function(TextEditingValue textEditingValue)
@@ -33,7 +33,7 @@ class AppAutocomplete<T extends BaseModel> extends StatelessWidget {
           options: options,
           width: constraints.biggest.width,
         ),
-        displayStringForOption: (option) => option.toDisplayString,
+        displayStringForOption: (option) => option.toStringDisplay,
         fieldViewBuilder:
             (context, textEditingController, focusNode, onFieldSubmitted) =>
                 TextField(
@@ -50,7 +50,7 @@ class AppAutocomplete<T extends BaseModel> extends StatelessWidget {
   }
 }
 
-class _AutocompleteOption<T extends BaseModel> extends StatelessWidget {
+class _AutocompleteOption<T extends AutoCompleteModel> extends StatelessWidget {
   final Iterable<T> options;
   final double width;
   final void Function(T) onSelected;
@@ -91,7 +91,7 @@ class _AutocompleteOption<T extends BaseModel> extends StatelessWidget {
                   return Container(
                       color: highlight ? Theme.of(context).focusColor : null,
                       padding: const EdgeInsets.all(16.0),
-                      child: Text(option.toDisplayString));
+                      child: Text(option.toStringDisplay));
                 }),
               );
             },

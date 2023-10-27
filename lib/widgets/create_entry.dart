@@ -1,44 +1,60 @@
+import 'package:diet_tracker/resources/models/create.dart';
+import 'package:diet_tracker/resources/models/display.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:diet_tracker/resources/stores/products.dart';
 import 'package:diet_tracker/widgets/app_autocomplete.dart';
-import 'package:diet_tracker/resources/models.dart';
 
-class CreateEntryFormFieldValue {
-  ProductModel? product;
-  int amount;
-  CreateEntryFormFieldValue({this.product, this.amount = 0});
+class _CreateEntryFormState {
+  DisplayProduct? product;
+  int? amount;
 }
 
-class CreateEntry extends StatelessWidget {
-  final DateTime date;
-  final void Function(CreateEntryFormFieldValue? entryData) onSaved;
+class CreateReportEntry extends StatelessWidget {
+  final void Function(CreateEntry? entryData) onSaved;
   final void Function(BuildContext) onDelete;
-  const CreateEntry({
+  const CreateReportEntry({
     super.key,
-    required this.date,
     required this.onSaved,
     required this.onDelete,
   });
 
+  void _onSaved(_CreateEntryFormState? newValue) {
+    if (newValue == null) return;
+    final product = newValue.product!;
+    final entryAmount = newValue.amount!;
+    final amount = entryAmount / product.amount;
+    final entry = CreateEntry.empty();
+    entry.productId = newValue.product!.id;
+    entry.amount = entryAmount;
+    entry.carbohydrates = amount * product.carbohydrate;
+    entry.proteins = amount * product.protein;
+    entry.fats = amount * product.fat;
+    onSaved(entry);
+  }
+
+  String? _onValidate(_CreateEntryFormState? value) {
+    if (value == null) {
+      return null;
+      // return 'מוצר וכמות לא יכלים להיות רקים';
+    }
+    if (value.product == null) {
+      return 'מוצר לא יכל להיות ריק';
+    }
+    if (value.amount == null || value.amount == 0) {
+      return 'כמות חייב להיות מספר גדול מ-0';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final products = context.read<ProductsStore>().products;
-    return FormField<CreateEntryFormFieldValue>(
-      onSaved: onSaved,
-      validator: (value) {
-        if (value == null) {
-          return 'מוצר וכמות לא יכלים להיות רקים';
-        }
-        if (value.product == null) {
-          return 'מוצר לא יכל להיות ריק';
-        }
-        if (value.amount == 0) {
-          return 'כמות לא יכל להיות ריק או 0';
-        }
-        return null;
-      },
+    return FormField<_CreateEntryFormState>(
+      initialValue: _CreateEntryFormState(),
+      onSaved: _onSaved,
+      validator: _onValidate,
       builder: (field) {
         final errorColor = Theme.of(context).colorScheme.error;
         final hasError = field.hasError;
@@ -47,19 +63,17 @@ class CreateEntry extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: AppAutocomplete<ProductModel>(
+                  child: AppAutocomplete<DisplayProduct>(
                     label: 'מוצר',
                     errorText: hasError ? '' : null,
                     optionsBuilder: (textEditingValue) => products
                         .where((product) =>
                             product.name.contains(textEditingValue.text))
                         .toList(),
-                    onSelected: (option) => field.didChange(
-                      CreateEntryFormFieldValue(
-                        product: option,
-                        amount: field.value?.amount ?? 0,
-                      ),
-                    ),
+                    onSelected: (option) {
+                      field.value!.product = option;
+                      field.didChange(field.value);
+                    },
                   ),
                 ),
                 const Padding(padding: EdgeInsets.all(10)),
@@ -71,12 +85,10 @@ class CreateEntry extends StatelessWidget {
                       errorStyle: const TextStyle(height: 0),
                       errorText: hasError ? '' : null,
                     ),
-                    onChanged: (newValue) => field.didChange(
-                      CreateEntryFormFieldValue(
-                        product: field.value?.product,
-                        amount: int.tryParse(newValue) ?? 0,
-                      ),
-                    ),
+                    onSubmitted: (newValue) {
+                      field.value!.amount = int.tryParse(newValue) ?? 0;
+                      field.didChange(field.value);
+                    },
                   ),
                 ),
               ],

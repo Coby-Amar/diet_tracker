@@ -1,9 +1,9 @@
-import 'package:diet_tracker/resources/models.dart';
+import 'package:diet_tracker/resources/models/create.dart';
 import 'package:diet_tracker/validations.dart';
 import 'package:flutter/material.dart';
 
 typedef FormBuilder = Widget Function(ThemeData theme, Validations validations);
-typedef FormOnSuccess<T extends Model> = T Function();
+typedef FormOnSuccess<T extends CreationModel> = T Function();
 
 class DialogScaffoldForm extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();

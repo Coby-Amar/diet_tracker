@@ -1,12 +1,11 @@
 import 'dart:io';
 
+import 'package:diet_tracker/resources/models/display.dart';
 import 'package:diet_tracker/widgets/slideable_page_item.dart';
 import 'package:flutter/material.dart';
 
-import 'package:diet_tracker/resources/models.dart';
-
 class ProductItem extends StatelessWidget {
-  final ProductModel product;
+  final DisplayProduct product;
   final VoidCallback onEdit;
   final VoidCallback onUpdate;
   final VoidCallback onDelete;

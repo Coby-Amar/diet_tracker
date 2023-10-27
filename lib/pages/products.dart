@@ -1,6 +1,6 @@
 import 'package:diet_tracker/dialogs/create_product.dart';
 import 'package:diet_tracker/mixins/dialogs.dart';
-import 'package:diet_tracker/resources/models.dart';
+import 'package:diet_tracker/resources/models/create.dart';
 import 'package:diet_tracker/resources/stores/products.dart';
 import 'package:diet_tracker/widgets/appbar_themed.dart';
 import 'package:diet_tracker/widgets/floating_add_button.dart';
@@ -36,7 +36,7 @@ class ProductsPage extends StatelessWidget with Dialogs {
       ),
       floatingActionButton: FloatingAddButton(
         onPressed: () async {
-          final result = await openDialog<ProductModel>(
+          final result = await openDialog<CreateProduct>(
             context,
             const CreateProductDialog(),
           );

@@ -1,8 +1,8 @@
-import 'package:diet_tracker/resources/models.dart';
+import 'package:diet_tracker/resources/models/display.dart';
 import 'package:flutter/material.dart';
 
 class ReportCard extends StatelessWidget {
-  final ReportModel report;
+  final DisplayReport report;
   const ReportCard({
     super.key,
     required this.report,

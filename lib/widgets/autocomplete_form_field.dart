@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:diet_tracker/resources/models.dart';
+import 'package:diet_tracker/resources/models/display.dart';
 import 'package:diet_tracker/validations.dart';
 import 'package:flutter/material.dart';
 
-class AutocompleteFormField<T extends BaseModel> extends StatelessWidget {
+class AutocompleteFormField<T extends DisplayModel> extends StatelessWidget {
   final String label;
   final void Function(T?) onSaved;
   final FutureOr<Iterable<T>> Function(TextEditingValue textEditingValue)
@@ -46,7 +46,7 @@ class AutocompleteFormField<T extends BaseModel> extends StatelessWidget {
   }
 }
 
-class _AutocompleteOption<T extends BaseModel> extends StatelessWidget {
+class _AutocompleteOption<T extends DisplayModel> extends StatelessWidget {
   final Iterable<T> options;
   final void Function(T) onSelected;
   const _AutocompleteOption({

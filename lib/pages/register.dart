@@ -1,4 +1,5 @@
-import 'package:diet_tracker/resources/stores/auth.dart';
+import 'package:diet_tracker/resources/models/create.dart';
+import 'package:diet_tracker/resources/stores/info.dart';
 import 'package:diet_tracker/widgets/appbar_themed.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,15 +13,12 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-  String username = '';
-  String password = '';
-  String name = '';
-  String phonenumber = '';
+  final model = CreateRegistration.empty();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authStore = context.read<AuthStore>();
+    final authStore = context.read<InfoStore>();
     return Scaffold(
       appBar: const AppBarThemed(
         title: 'Register',
@@ -34,6 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 color: theme.cardColor,
                 padding: const EdgeInsets.all(20),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextFormField(
                       initialValue: "cobyamar@gmail.com",
@@ -42,7 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         label: Text("שם משתמש/מייל"),
                       ),
                       onSaved: (newValue) =>
-                          setState(() => username = newValue!),
+                          setState(() => model.username = newValue!),
                     ),
                     TextFormField(
                       initialValue: "123456789",
@@ -51,14 +50,15 @@ class _RegisterPageState extends State<RegisterPage> {
                         label: Text("סיסמה"),
                       ),
                       onSaved: (newValue) =>
-                          setState(() => password = newValue!),
+                          setState(() => model.password = newValue!),
                     ),
                     TextFormField(
                       initialValue: "קובי עמר",
                       decoration: const InputDecoration(
                         label: Text("שם מלא"),
                       ),
-                      onSaved: (newValue) => setState(() => name = newValue!),
+                      onSaved: (newValue) =>
+                          setState(() => model.name = newValue!),
                     ),
                     TextFormField(
                       initialValue: "0526161014",
@@ -67,7 +67,41 @@ class _RegisterPageState extends State<RegisterPage> {
                         label: Text("מספר טלפון"),
                       ),
                       onSaved: (newValue) =>
-                          setState(() => phonenumber = newValue!),
+                          setState(() => model.phonenumber = newValue!),
+                    ),
+                    const Text(
+                      "הגבלה יומית",
+                      style: TextStyle(
+                        fontSize: 24,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                    TextFormField(
+                      initialValue: "1",
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        label: Text("פחממותה"),
+                      ),
+                      onSaved: (newValue) => setState(() =>
+                          model.carbohydrate = int.tryParse(newValue!) ?? 0),
+                    ),
+                    TextFormField(
+                      initialValue: "1",
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        label: Text("חלבון"),
+                      ),
+                      onSaved: (newValue) => setState(
+                          () => model.protein = int.tryParse(newValue!) ?? 0),
+                    ),
+                    TextFormField(
+                      initialValue: "1",
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        label: Text("שומן"),
+                      ),
+                      onSaved: (newValue) => setState(
+                          () => model.fat = int.tryParse(newValue!) ?? 0),
                     ),
                   ],
                 ),
@@ -82,12 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     }
                     _formKey.currentState?.save();
                     final navigator = Navigator.of(context);
-                    await authStore.register(
-                      username,
-                      password,
-                      name,
-                      phonenumber,
-                    );
+                    await authStore.register(model);
                     if (authStore.loggedIn) {
                       navigator.pushReplacementNamed("home");
                     }

@@ -13,13 +13,13 @@ mixin _$ReportsStore on _ReportsStore, Store {
       Atom(name: '_ReportsStore.reports', context: context);
 
   @override
-  ObservableList<ReportModel> get reports {
+  ObservableList<DisplayReport> get reports {
     _$reportsAtom.reportRead();
     return super.reports;
   }
 
   @override
-  set reports(ObservableList<ReportModel> value) {
+  set reports(ObservableList<DisplayReport> value) {
     _$reportsAtom.reportWrite(value, super.reports, () {
       super.reports = value;
     });
@@ -37,7 +37,7 @@ mixin _$ReportsStore on _ReportsStore, Store {
       AsyncAction('_ReportsStore.create', context: context);
 
   @override
-  Future<void> create(ReportWithEntries reportWithEntries) {
+  Future<void> create(CreateReportWithEntries reportWithEntries) {
     return _$createAsyncAction.run(() => super.create(reportWithEntries));
   }
 

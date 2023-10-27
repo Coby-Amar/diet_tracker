@@ -1,5 +1,5 @@
 import 'package:diet_tracker/dialogs/dialog_scaffold_form.dart';
-import 'package:diet_tracker/resources/models.dart';
+import 'package:diet_tracker/resources/models/create.dart';
 import 'package:flutter/material.dart';
 
 class DailyLimit extends StatelessWidget {
@@ -10,7 +10,7 @@ class DailyLimit extends StatelessWidget {
     return DialogScaffoldForm(
       title: 'הגבלה יומי',
       onSuccess: () {
-        return const BaseModel(id: 'id');
+        return CreateEntry.empty();
       },
       formBuilder: (theme, validations) => Column(
         children: [

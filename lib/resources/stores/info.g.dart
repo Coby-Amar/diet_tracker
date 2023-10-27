@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auth.dart';
+part of 'info.dart';
 
 // **************************************************************************
 // StoreGenerator
@@ -8,9 +8,9 @@ part of 'auth.dart';
 
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
-mixin _$AuthStore on AauthStore, Store {
+mixin _$InfoStore on _InfoStore, Store {
   late final _$loggedInAtom =
-      Atom(name: 'AauthStore.loggedIn', context: context);
+      Atom(name: '_InfoStore.loggedIn', context: context);
 
   @override
   bool get loggedIn {
@@ -25,34 +25,47 @@ mixin _$AuthStore on AauthStore, Store {
     });
   }
 
-  late final _$checkIfLoggedInAsyncAction =
-      AsyncAction('AauthStore.checkIfLoggedIn', context: context);
+  late final _$userAtom = Atom(name: '_InfoStore.user', context: context);
 
   @override
-  Future<void> checkIfLoggedIn() {
-    return _$checkIfLoggedInAsyncAction.run(() => super.checkIfLoggedIn());
+  DisplayUser? get user {
+    _$userAtom.reportRead();
+    return super.user;
+  }
+
+  @override
+  set user(DisplayUser? value) {
+    _$userAtom.reportWrite(value, super.user, () {
+      super.user = value;
+    });
+  }
+
+  late final _$getUserAsyncAction =
+      AsyncAction('_InfoStore.getUser', context: context);
+
+  @override
+  Future<void> getUser() {
+    return _$getUserAsyncAction.run(() => super.getUser());
   }
 
   late final _$registerAsyncAction =
-      AsyncAction('AauthStore.register', context: context);
+      AsyncAction('_InfoStore.register', context: context);
 
   @override
-  Future<void> register(
-      String username, String password, String name, String phonenumber) {
-    return _$registerAsyncAction
-        .run(() => super.register(username, password, name, phonenumber));
+  Future<void> register(CreateRegistration model) {
+    return _$registerAsyncAction.run(() => super.register(model));
   }
 
   late final _$loginAsyncAction =
-      AsyncAction('AauthStore.login', context: context);
+      AsyncAction('_InfoStore.login', context: context);
 
   @override
-  Future<void> login(String username, String password) {
-    return _$loginAsyncAction.run(() => super.login(username, password));
+  Future<void> login(CreateLogin loginModel) {
+    return _$loginAsyncAction.run(() => super.login(loginModel));
   }
 
   late final _$logoutAsyncAction =
-      AsyncAction('AauthStore.logout', context: context);
+      AsyncAction('_InfoStore.logout', context: context);
 
   @override
   Future<void> logout() {
@@ -62,7 +75,8 @@ mixin _$AuthStore on AauthStore, Store {
   @override
   String toString() {
     return '''
-loggedIn: ${loggedIn}
+loggedIn: ${loggedIn},
+user: ${user}
     ''';
   }
 }

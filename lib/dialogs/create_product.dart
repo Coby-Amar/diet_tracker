@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:diet_tracker/dialogs/dialog_scaffold_form.dart';
-import 'package:diet_tracker/resources/models.dart';
+import 'package:diet_tracker/resources/models/create.dart';
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -15,24 +15,12 @@ class CreateProductDialog extends StatefulWidget {
 
 class _CreateProductDialogState extends State<CreateProductDialog> {
   final ImagePicker _picker = ImagePicker();
-  String? _image;
-  String _name = '';
-  int _amount = 0;
-  int _carbohydrate = 0;
-  int _protein = 0;
-  int _fat = 0;
+  final CreateProduct _productModel = CreateProduct.empty();
 
   @override
   Widget build(BuildContext context) => DialogScaffoldForm(
         title: 'יצירת מוצר',
-        onSuccess: () => ProductModel(
-          image: _image,
-          name: _name,
-          amount: _amount,
-          carbohydrate: _carbohydrate,
-          protein: _protein,
-          fat: _fat,
-        ),
+        onSuccess: () => _productModel,
         formBuilder: (theme, validations) => Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -45,9 +33,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                       final XFile? pickedFile =
                           await _picker.pickImage(source: ImageSource.gallery);
                       if (pickedFile != null) {
-                        setState(() {
-                          _image = pickedFile.path;
-                        });
+                        setState(() => _productModel.image = pickedFile.path);
                       }
                     },
                     child: const Text('בחר תמונה'),
@@ -56,8 +42,8 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                 Expanded(
                   flex: 1,
                   child: Visibility(
-                    visible: _image?.isNotEmpty ?? false,
-                    child: Image.file(File(_image ?? '')),
+                    visible: _productModel.image?.isNotEmpty ?? false,
+                    child: Image.file(File(_productModel.image ?? '')),
                   ),
                 ),
               ],
@@ -66,7 +52,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
               decoration: const InputDecoration(labelText: 'שם'),
               validator: validations.required,
               onSaved: (newValue) => setState(() {
-                _name = newValue!.trim();
+                _productModel.name = newValue!.trim();
               }),
             ),
             TextFormField(
@@ -76,9 +62,10 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                 validations.required,
                 validations.numberOnly,
               ]),
-              onSaved: (newValue) => setState(() {
-                _amount = int.parse(newValue!.trim());
-              }),
+              onSaved: (newValue) => setState(
+                () =>
+                    _productModel.amount = int.tryParse(newValue!.trim()) ?? 0,
+              ),
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: 'פחממה'),
@@ -87,9 +74,10 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                 validations.required,
                 validations.numberOnly,
               ]),
-              onSaved: (newValue) => setState(() {
-                _carbohydrate = int.parse(newValue!.trim());
-              }),
+              onSaved: (newValue) => setState(
+                () => _productModel.carbohydrate =
+                    int.tryParse(newValue!.trim()) ?? 0,
+              ),
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: 'חלבון'),
@@ -98,9 +86,9 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                 validations.required,
                 validations.numberOnly,
               ]),
-              onSaved: (newValue) => setState(() {
-                _protein = int.parse(newValue!.trim());
-              }),
+              onSaved: (newValue) => setState(
+                () => _productModel.protein = int.parse(newValue!.trim()),
+              ),
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: 'שומן'),
@@ -109,9 +97,9 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
                 validations.required,
                 validations.numberOnly,
               ]),
-              onSaved: (newValue) => setState(() {
-                _fat = int.parse(newValue!.trim());
-              }),
+              onSaved: (newValue) => setState(
+                () => _productModel.fat = int.tryParse(newValue!.trim()) ?? 0,
+              ),
             ),
           ],
         ),

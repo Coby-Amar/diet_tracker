@@ -1,50 +1,47 @@
 import 'package:diet_tracker/dio_client.dart';
+import 'package:diet_tracker/resources/models/create.dart';
+import 'package:diet_tracker/resources/models/api.dart';
 
 class AuthApi {
   final dioClient = DioClient().dio;
-  Future<bool> loggedInCheck() async {
+
+  Future<ApiUser?> user() async {
     try {
-      await dioClient.get("auth/healthz");
-      return true;
+      final response = await dioClient.get("user");
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        return ApiUser.fromMap(data);
+      }
+      return null;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 
-  Future<bool> register(
-    String username,
-    String password,
-    String name,
-    String phonenumber,
-  ) async {
+  Future<ApiUser?> register(CreateRegistration model) async {
     try {
-      await dioClient.post(
-        "auth/register",
-        data: {
-          "username": username,
-          "password": password,
-          "name": name,
-          "phonenumber": phonenumber,
-        },
-      );
-      return true;
+      final response = await dioClient.post("auth/register", data: model);
+      if (response.data) {
+        return ApiUser.fromMap(response.data);
+      }
+      return null;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 
-  Future<bool> login(String username, String password) async {
+  Future<ApiUser?> login(CreateLogin loginModel) async {
     try {
-      await dioClient.post(
+      final response = await dioClient.post(
         "auth/login",
-        data: {
-          "username": username,
-          "password": password,
-        },
+        data: loginModel,
       );
-      return true;
+      if (response.data) {
+        return ApiUser.fromMap(response.data);
+      }
+      return null;
     } catch (e) {
-      return false;
+      return null;
     }
   }
 
