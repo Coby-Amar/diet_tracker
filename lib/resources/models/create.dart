@@ -3,6 +3,7 @@
 /// ----------------------------------------------------------------------------
 abstract class CreationModel {
   CreationModel.empty();
+  const CreationModel();
   Map<String, Object?> toMap();
 }
 
@@ -99,15 +100,15 @@ class CreateEntry extends CreationModel {
 /// ----------------------------------------------------------------------------
 class CreateReport extends CreationModel {
   DateTime date = DateTime.now();
-  double carbohydratesTotal = 0;
-  double proteinsTotal = 0;
-  double fatsTotal = 0;
+  double carbohydratesTotal = 0.0;
+  double proteinsTotal = 0.0;
+  double fatsTotal = 0.0;
 
   CreateReport.empty() : super.empty();
 
   @override
   Map<String, Object?> toMap() => {
-        "date": date,
+        "date": "${date.year}-${date.month}-${date.day}",
         "carbohydratesTotal": carbohydratesTotal,
         "proteinsTotal": proteinsTotal,
         "fatsTotal": fatsTotal,
@@ -126,6 +127,6 @@ class CreateReportWithEntries extends CreationModel {
   @override
   Map<String, Object?> toMap() => {
         "report": report.toMap(),
-        "entries": entries.map((entry) => entry.toMap()),
+        "entries": entries.map((entry) => entry.toMap()).toList(),
       };
 }

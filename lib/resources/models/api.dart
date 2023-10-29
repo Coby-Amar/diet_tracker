@@ -1,3 +1,10 @@
+double _checkIfInt(value) {
+  if (value is int) {
+    return value.toDouble();
+  }
+  return value as double;
+}
+
 /// ----------------------------------------------------------------------------
 /// ApiUser
 /// ----------------------------------------------------------------------------
@@ -58,9 +65,9 @@ class ApiEntry extends ApiModel {
   ApiEntry.fromMap(super.map)
       : productId = map["productId"],
         amount = map["amount"],
-        carbohydrates = map["carbohydrates"],
-        proteins = map["proteins"],
-        fats = map["fats"],
+        carbohydrates = _checkIfInt(map["carbohydrates"]),
+        proteins = _checkIfInt(map["proteins"]),
+        fats = _checkIfInt(map["fats"]),
         super.fromMap();
 }
 
@@ -73,10 +80,11 @@ class ApiReport extends ApiModel {
   final double proteinsTotal;
   final double fatsTotal;
 
+  // ApiReport.fromMap(super.map) : super.fromMap();
   ApiReport.fromMap(super.map)
       : date = DateTime.tryParse(map["date"]) ?? DateTime(0000),
-        carbohydratesTotal = map["carbohydratesTotal"],
-        proteinsTotal = map["proteinsTotal"],
-        fatsTotal = map["fatsTotal"],
+        carbohydratesTotal = _checkIfInt(map["carbohydratesTotal"]),
+        proteinsTotal = _checkIfInt(map["proteinsTotal"]),
+        fatsTotal = _checkIfInt(map["fatsTotal"]),
         super.fromMap();
 }

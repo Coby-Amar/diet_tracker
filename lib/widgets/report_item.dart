@@ -1,106 +1,83 @@
 import 'package:diet_tracker/resources/models/display.dart';
 import 'package:diet_tracker/resources/stores/info.dart';
+import 'package:diet_tracker/widgets/report_table.dart';
+import 'package:diet_tracker/widgets/table_cell_text.dart';
+import 'package:diet_tracker/widgets/table_cell_text_header_footer.dart';
 import 'package:flutter/material.dart';
 
-import 'package:diet_tracker/widgets/slideable_page_item.dart';
 import 'package:provider/provider.dart';
-
-typedef ReportItemEventFunc = void Function(DisplayReport report);
 
 class ReportItem extends StatelessWidget {
   final DisplayReport report;
-  final ReportItemEventFunc onEdit;
-  final ReportItemEventFunc onUpdate;
-  final ReportItemEventFunc onDelete;
+  final VoidCallback onView;
+  final VoidCallback onEdit;
   const ReportItem({
     super.key,
     required this.report,
+    required this.onView,
     required this.onEdit,
-    required this.onUpdate,
-    required this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final user = context.read<InfoStore>().user!;
-    return SlidablePageItem(
-      onEdit: () => onEdit(report),
-      onDelete: () => onDelete(report),
-      onUpdate: () => onUpdate(report),
-      child: Container(
+    return InkWell(
+      onTap: onView,
+      onDoubleTap: onEdit,
+      child: Card(
         color: theme.cardColor,
-        padding: const EdgeInsets.all(10),
-        child: Row(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
+            Padding(
+              padding: const EdgeInsets.all(15.0),
               child: Text(
                 report.formattedDate,
-                style: theme.textTheme.headlineMedium,
+                style: theme.textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
             ),
-            Expanded(
-              flex: 2,
-              child: Table(
-                children: [
-                  const TableRow(
-                    children: [
-                      TableCell(
-                        child: Text(""),
-                      ),
-                      TableCell(
-                        child: Text("מותר"),
-                      ),
-                      TableCell(
-                        child: Text("סכום"),
-                      ),
-                      TableCell(
-                        child: Text("נותר"),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      const TableCell(child: Text("פחממות")),
-                      TableCell(child: Text(user.carbohydrateString)),
-                      TableCell(child: Text(report.carbohydratesTotalString)),
-                      TableCell(
-                        child: ReportItemRemainingText(
-                          limit: user.carbohydrate,
-                          total: report.carbohydratesTotal,
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      const TableCell(child: Text("חלבון")),
-                      TableCell(child: Text(user.proteinString)),
-                      TableCell(child: Text(report.proteinsTotalString)),
-                      TableCell(
-                        child: ReportItemRemainingText(
-                          limit: user.protein,
-                          total: report.proteinsTotal,
-                        ),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      const TableCell(child: Text("שומן")),
-                      TableCell(child: Text(user.fatString)),
-                      TableCell(child: Text(report.fatsTotalString)),
-                      TableCell(
-                        child: ReportItemRemainingText(
-                          limit: user.fat,
-                          total: report.fatsTotal,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            ReportTable(
+              header: const [
+                TableCellTextHeaderFooter(label: ""),
+                TableCellTextHeaderFooter(label: "פחממות"),
+                TableCellTextHeaderFooter(label: "חלבון"),
+                TableCellTextHeaderFooter(label: "שומן"),
+              ],
+              entries: [
+                TableRow(
+                  children: [
+                    const TableCellText(label: "סכום"),
+                    TableCellText(label: report.carbohydratesTotalString),
+                    TableCellText(label: report.proteinsTotalString),
+                    TableCellText(label: report.fatsTotalString),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    const TableCellText(label: "מותר"),
+                    TableCellText(label: user.carbohydrateString),
+                    TableCellText(label: user.proteinString),
+                    TableCellText(label: user.fatString),
+                  ],
+                ),
+              ],
+              footer: [
+                const TableCellTextHeaderFooter(label: "נותר"),
+                TableCellReportItemRemainingText(
+                  limit: user.carbohydrate,
+                  total: report.carbohydratesTotal,
+                ),
+                TableCellReportItemRemainingText(
+                  limit: user.protein,
+                  total: report.proteinsTotal,
+                ),
+                TableCellReportItemRemainingText(
+                  limit: user.fat,
+                  total: report.fatsTotal,
+                ),
+              ],
             ),
           ],
         ),
@@ -109,11 +86,11 @@ class ReportItem extends StatelessWidget {
   }
 }
 
-class ReportItemRemainingText extends StatelessWidget {
+class TableCellReportItemRemainingText extends StatelessWidget {
   final int limit;
   final double total;
 
-  const ReportItemRemainingText({
+  const TableCellReportItemRemainingText({
     super.key,
     required this.limit,
     required this.total,
@@ -126,13 +103,12 @@ class ReportItemRemainingText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = isOverLimit ? theme.colorScheme.error : Colors.lightGreen;
-    return Text(
-      (limit - total).toStringAsFixed(2),
-      textDirection: TextDirection.ltr,
-      textAlign: TextAlign.end,
-      style: TextStyle(
-        color: color,
+    final color = isOverLimit ? theme.colorScheme.error : Colors.green;
+    return TableCell(
+      child: Text(
+        (limit - total).abs().toStringAsFixed(2),
+        style: theme.textTheme.titleMedium?.copyWith(color: color),
+        textAlign: TextAlign.center,
       ),
     );
   }

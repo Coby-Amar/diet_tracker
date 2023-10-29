@@ -112,6 +112,22 @@ class DisplayEntry extends DisplayModel {
   double get fats {
     return _entry.fats;
   }
+
+  String get amountString {
+    return _entry.amount.toString();
+  }
+
+  String get carbohydratesString {
+    return _entry.carbohydrates.toStringAsFixed(2);
+  }
+
+  String get proteinsString {
+    return _entry.proteins.toStringAsFixed(2);
+  }
+
+  String get fatsString {
+    return _entry.fats.toStringAsFixed(2);
+  }
 }
 
 /// ----------------------------------------------------------------------------

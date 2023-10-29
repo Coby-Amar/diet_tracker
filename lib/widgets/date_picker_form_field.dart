@@ -28,8 +28,8 @@ class DatePicketFormField extends StatelessWidget {
             final result = await showDatePicker(
               context: context,
               initialDate: _today,
-              firstDate: _today,
-              lastDate: DateTime(_today.year + 1, _today.month, _today.day),
+              firstDate: DateTime(_today.year - 1, _today.month, _today.day),
+              lastDate: _today,
             );
             if (result != null) {
               field.didChange(result);

@@ -1,6 +1,8 @@
 import 'package:diet_tracker/dialogs/create_report.dart';
+import 'package:diet_tracker/dialogs/view_report.dart';
 import 'package:diet_tracker/mixins/dialogs.dart';
 import 'package:diet_tracker/resources/models/create.dart';
+import 'package:diet_tracker/resources/models/display.dart';
 import 'package:diet_tracker/resources/stores/reports.dart';
 import 'package:diet_tracker/widgets/appbar_themed.dart';
 import 'package:diet_tracker/widgets/floating_add_button.dart';
@@ -22,15 +24,25 @@ class ReportsPage extends StatelessWidget with Dialogs {
         showActions: true,
       ),
       body: Observer(
-          builder: (_) => ListView.separated(
-                itemBuilder: (context, index) => ReportItem(
-                  onEdit: (report) {},
-                  onUpdate: (report) {},
-                  onDelete: (report) => reportsStore.delete(report.id),
-                  report: reports[index],
-                ),
-                itemCount: reports.length,
-                separatorBuilder: (context, index) => const Divider(),
+          builder: (_) => GridView.count(
+                crossAxisCount: 2,
+                children: reports
+                    .map((report) => ReportItem(
+                          onView: () => openDialog(
+                            context,
+                            ViewReportDialog(report: report),
+                          ),
+
+                          onEdit: () async {
+                            await openDialog(
+                              context,
+                              const CreateReportDialog(),
+                            );
+                          },
+                          // onDelete: () => reportsStore.delete(report.id),
+                          report: report,
+                        ))
+                    .toList(),
               )),
       floatingActionButton: FloatingAddButton(
         onPressed: () async {

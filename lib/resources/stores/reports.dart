@@ -27,6 +27,14 @@ abstract class _ReportsStore with Store {
   }
 
   @action
+  Future<List<DisplayEntry>?> loadEntries(DisplayReport report) async {
+    final loadedEntries = await _reportsApi.getReportEntries(report.id);
+    if (loadedEntries != null) {
+      return loadedEntries.map((e) => DisplayEntry(e)).toList();
+    }
+  }
+
+  @action
   Future<void> create(CreateReportWithEntries reportWithEntries) async {
     final createdReport = await _reportsApi.createReport(reportWithEntries);
     if (createdReport != null) {
@@ -36,8 +44,8 @@ abstract class _ReportsStore with Store {
 
   @action
   Future<void> delete(String reportId) async {
-    // if (await _reportsApi.deleteReport(reportId)) {
-    //   reports.removeWhere((element) => element.report.id == reportId);
-    // }
+    if (await _reportsApi.deleteReport(reportId)) {
+      reports.removeWhere((element) => element.id == reportId);
+    }
   }
 }

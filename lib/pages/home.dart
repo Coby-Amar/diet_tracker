@@ -18,11 +18,9 @@ class _HomePageState extends State<HomePage> {
     final theme = Theme.of(context);
     return Scaffold(
       bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
+        onDestinationSelected: (index) => setState(
+          () => currentPageIndex = index,
+        ),
         backgroundColor: theme.primaryColorLight,
         indicatorColor: theme.primaryColorDark,
         selectedIndex: currentPageIndex,

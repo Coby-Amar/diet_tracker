@@ -33,6 +33,14 @@ mixin _$ReportsStore on _ReportsStore, Store {
     return _$loadAsyncAction.run(() => super.load());
   }
 
+  late final _$loadEntriesAsyncAction =
+      AsyncAction('_ReportsStore.loadEntries', context: context);
+
+  @override
+  Future<List<DisplayEntry>?> loadEntries(DisplayReport report) {
+    return _$loadEntriesAsyncAction.run(() => super.loadEntries(report));
+  }
+
   late final _$createAsyncAction =
       AsyncAction('_ReportsStore.create', context: context);
 

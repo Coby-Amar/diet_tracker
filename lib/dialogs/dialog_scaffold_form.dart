@@ -1,3 +1,4 @@
+import 'package:diet_tracker/mixins/dialogs.dart';
 import 'package:diet_tracker/resources/models/create.dart';
 import 'package:diet_tracker/validations.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,7 @@ import 'package:flutter/material.dart';
 typedef FormBuilder = Widget Function(ThemeData theme, Validations validations);
 typedef FormOnSuccess<T extends CreationModel> = T Function();
 
-class DialogScaffoldForm extends StatelessWidget {
+class DialogScaffoldForm extends StatelessWidget with Dialogs {
   final _formKey = GlobalKey<FormState>();
   final FormBuilder formBuilder;
   final FormOnSuccess onSuccess;
@@ -28,6 +29,7 @@ class DialogScaffoldForm extends StatelessWidget {
         centerTitle: true,
       ),
       body: Form(
+        onWillPop: () => openAreYouSureDialog(context),
         key: _formKey,
         child: Column(
           children: [

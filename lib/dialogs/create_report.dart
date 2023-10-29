@@ -38,25 +38,6 @@ class _CreateReportDialogState extends State<CreateReportDialog> {
               label: 'date',
               onSaved: (date) => setState(() => _model.report.date = date!),
             ),
-            // Padding(
-            //   padding: const EdgeInsets.only(top: 8.0),
-            //   child: Row(
-            //     children: [
-            //       TextButton(
-            //         onPressed: _entryCount < 15
-            //             ? () => setState(() => _entryCount++)
-            //             : null,
-            //         child: const Text("הוספת פריט"),
-            //       ),
-            //       TextButton(
-            //         onPressed: _entryCount > 1
-            //             ? () => setState(() => _entryCount--)
-            //             : null,
-            //         child: const Text("הסיר פריט"),
-            //       ),
-            //     ],
-            //   ),
-            // ),
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.only(bottom: 10),

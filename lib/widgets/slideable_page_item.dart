@@ -1,8 +1,9 @@
 import 'package:diet_tracker/dialogs/are_you_sure.dart.dart';
+import 'package:diet_tracker/mixins/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class SlidablePageItem extends StatelessWidget {
+class SlidablePageItem extends StatelessWidget with Dialogs {
   final VoidCallback onEdit;
   final VoidCallback onUpdate;
   final VoidCallback onDelete;
@@ -21,7 +22,7 @@ class SlidablePageItem extends StatelessWidget {
     return Slidable(
       key: super.key,
       startActionPane: ActionPane(
-        extentRatio: 0.25,
+        extentRatio: 0.5,
         motion: const BehindMotion(),
         children: [
           SlidableAction(
@@ -40,11 +41,8 @@ class SlidablePageItem extends StatelessWidget {
             backgroundColor: theme.colorScheme.error,
             icon: Icons.delete_forever_outlined,
             onPressed: (context) async {
-              final bool? response = await showDialog(
-                context: context,
-                builder: (context) => const AreYouSureDialogs(),
-              );
-              if (response ?? false) {
+              final response = await openAreYouSureDialog(context);
+              if (response) {
                 onDelete();
               }
             },

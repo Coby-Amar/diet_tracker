@@ -1,3 +1,4 @@
+import 'package:diet_tracker/pages/register.dart';
 import 'package:diet_tracker/resources/models/create.dart';
 import 'package:diet_tracker/resources/stores/info.dart';
 import 'package:diet_tracker/widgets/appbar_themed.dart';
@@ -21,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
     final authStore = context.read<InfoStore>();
     return Scaffold(
       appBar: const AppBarThemed(
-        title: 'Login',
+        title: 'ברוך הבא',
       ),
       body: Center(
         child: Form(
@@ -56,10 +57,12 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           const Text("משתמש חדש?"),
                           TextButton(
-                            onPressed: () =>
-                                Navigator.of(context).pushNamed("register"),
+                            onPressed: () => showDialog(
+                              context: context,
+                              builder: (context) => const RegisterPage(),
+                            ),
                             child: Text(
-                              "הרשם",
+                              "לחץ כאן",
                               style: TextStyle(color: theme.primaryColorDark),
                             ),
                           )

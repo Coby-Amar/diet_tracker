@@ -35,7 +35,7 @@ abstract class _ProductsStore with Store {
         products.add(DisplayProduct(createdProduct));
       }
     } catch (e) {
-      print(e);
+      print("CreateProduct: $e");
     }
   }
 
@@ -55,7 +55,7 @@ abstract class _ProductsStore with Store {
         }
       }
     } catch (e) {
-      print(e);
+      print("update product: $e");
     }
   }
 

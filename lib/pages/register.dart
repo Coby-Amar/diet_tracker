@@ -21,7 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final authStore = context.read<InfoStore>();
     return Scaffold(
       appBar: const AppBarThemed(
-        title: 'Register',
+        title: 'הרשמה',
       ),
       body: Center(
         child: Form(

@@ -22,8 +22,9 @@ class CreateReportEntry extends StatelessWidget {
 
   void _onSaved(_CreateEntryFormState? newValue) {
     if (newValue == null) return;
-    final product = newValue.product!;
-    final entryAmount = newValue.amount!;
+    final product = newValue.product;
+    final entryAmount = newValue.amount;
+    if (product == null || entryAmount == null) return;
     final amount = entryAmount / product.amount;
     final entry = CreateEntry.empty();
     entry.productId = newValue.product!.id;
@@ -37,13 +38,14 @@ class CreateReportEntry extends StatelessWidget {
   String? _onValidate(_CreateEntryFormState? value) {
     if (value == null) {
       return null;
-      // return 'מוצר וכמות לא יכלים להיות רקים';
     }
-    if (value.product == null) {
-      return 'מוצר לא יכל להיות ריק';
-    }
-    if (value.amount == null || value.amount == 0) {
+    final productEmpty = value.product == null;
+    final amountEmpty = value.amount == null || value.amount == 0;
+    if (!productEmpty && amountEmpty) {
       return 'כמות חייב להיות מספר גדול מ-0';
+    }
+    if (!amountEmpty && productEmpty) {
+      return 'מוצר לא יכל להיות ריק';
     }
     return null;
   }
@@ -85,7 +87,7 @@ class CreateReportEntry extends StatelessWidget {
                       errorStyle: const TextStyle(height: 0),
                       errorText: hasError ? '' : null,
                     ),
-                    onSubmitted: (newValue) {
+                    onChanged: (newValue) {
                       field.value!.amount = int.tryParse(newValue) ?? 0;
                       field.didChange(field.value);
                     },

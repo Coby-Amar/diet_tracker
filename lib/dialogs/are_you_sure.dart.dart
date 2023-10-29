@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AreYouSureDialogs extends StatelessWidget {
-  const AreYouSureDialogs({super.key});
+class AreYouSureDialog extends StatelessWidget {
+  const AreYouSureDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

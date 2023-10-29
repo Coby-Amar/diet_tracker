@@ -21,8 +21,9 @@ class AuthApi {
   Future<ApiUser?> register(CreateRegistration model) async {
     try {
       final response = await dioClient.post("auth/register", data: model);
-      if (response.data) {
-        return ApiUser.fromMap(response.data);
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        return ApiUser.fromMap(data);
       }
       return null;
     } catch (e) {
@@ -36,8 +37,9 @@ class AuthApi {
         "auth/login",
         data: loginModel,
       );
-      if (response.data) {
-        return ApiUser.fromMap(response.data);
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        return ApiUser.fromMap(data);
       }
       return null;
     } catch (e) {

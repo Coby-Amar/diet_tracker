@@ -14,7 +14,21 @@ class ReportsApi {
             .toList();
       }
     } catch (e) {
-      print(e);
+      print("getReports: $e");
+    }
+    return null;
+  }
+
+  Future<List<ApiEntry>?> getReportEntries(String reportId) async {
+    try {
+      final response = await dioClient.get("reports/$reportId/entries");
+      if (response.data != null) {
+        return (response.data as Iterable)
+            .map((e) => ApiEntry.fromMap(e))
+            .toList();
+      }
+    } catch (e) {
+      print("getReports: $e");
     }
     return null;
   }
