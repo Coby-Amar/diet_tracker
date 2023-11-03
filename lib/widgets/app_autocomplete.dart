@@ -6,17 +6,19 @@ import 'package:flutter/scheduler.dart';
 
 class AppAutocomplete<T extends AutoCompleteModel> extends StatelessWidget {
   final String label;
-  final void Function(T option)? onSelected;
   final FutureOr<Iterable<T>> Function(TextEditingValue textEditingValue)
       optionsBuilder;
+  final void Function(T option)? onSelected;
+  final TextEditingValue? initialValue;
   final String? errorText;
   final TextStyle? errorStyle;
 
   const AppAutocomplete({
     super.key,
     required this.label,
-    required this.onSelected,
     required this.optionsBuilder,
+    this.onSelected,
+    this.initialValue,
     this.errorText,
     this.errorStyle,
   });
@@ -25,6 +27,7 @@ class AppAutocomplete<T extends AutoCompleteModel> extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) => RawAutocomplete<T>(
+        initialValue: initialValue,
         optionsBuilder: optionsBuilder,
         onSelected: onSelected,
         optionsViewBuilder: (context, onSelected, options) =>

@@ -11,6 +11,7 @@ import 'package:diet_tracker/resources/stores/products.dart';
 import 'package:diet_tracker/resources/stores/reports.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   if (!kIsWeb) {
     if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
       await windowManager.ensureInitialized();

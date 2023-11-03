@@ -117,7 +117,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     _formKey.currentState?.save();
                     final navigator = Navigator.of(context);
                     await authStore.register(model);
-                    if (authStore.loggedIn) {
+                    if (authStore.isLoggedIn) {
                       navigator.pushReplacementNamed("home");
                     }
                   },

@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                     _formKey.currentState?.save();
                     final navigator = Navigator.of(context);
                     await authStore.login(_createLoginModel);
-                    if (authStore.loggedIn) {
+                    if (authStore.isLoggedIn) {
                       navigator.pushReplacementNamed("home");
                     }
                   },

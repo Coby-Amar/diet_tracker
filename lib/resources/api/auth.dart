@@ -3,7 +3,7 @@ import 'package:diet_tracker/resources/models/create.dart';
 import 'package:diet_tracker/resources/models/api.dart';
 
 class AuthApi {
-  final dioClient = DioClient().dio;
+  final dioClient = DioClient();
 
   Future<ApiUser?> user() async {
     try {

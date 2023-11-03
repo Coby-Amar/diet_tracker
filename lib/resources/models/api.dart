@@ -80,11 +80,20 @@ class ApiReport extends ApiModel {
   final double proteinsTotal;
   final double fatsTotal;
 
-  // ApiReport.fromMap(super.map) : super.fromMap();
   ApiReport.fromMap(super.map)
       : date = DateTime.tryParse(map["date"]) ?? DateTime(0000),
         carbohydratesTotal = _checkIfInt(map["carbohydratesTotal"]),
         proteinsTotal = _checkIfInt(map["proteinsTotal"]),
         fatsTotal = _checkIfInt(map["fatsTotal"]),
+        super.fromMap();
+}
+
+class ApiReportWithEntries extends ApiModel {
+  final ApiReport report;
+  final List<ApiEntry> entries;
+
+  ApiReportWithEntries.fromMap(super.map)
+      : report = map["report"],
+        entries = map["entries"],
         super.fromMap();
 }

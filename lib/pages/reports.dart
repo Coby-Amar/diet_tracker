@@ -1,8 +1,7 @@
-import 'package:diet_tracker/dialogs/create_report.dart';
-import 'package:diet_tracker/dialogs/view_report.dart';
+import 'package:diet_tracker/dialogs/report/create_update_report.dart';
+import 'package:diet_tracker/dialogs/report/view_report.dart';
 import 'package:diet_tracker/mixins/dialogs.dart';
 import 'package:diet_tracker/resources/models/create.dart';
-import 'package:diet_tracker/resources/models/display.dart';
 import 'package:diet_tracker/resources/stores/reports.dart';
 import 'package:diet_tracker/widgets/appbar_themed.dart';
 import 'package:diet_tracker/widgets/floating_add_button.dart';
@@ -32,12 +31,15 @@ class ReportsPage extends StatelessWidget with Dialogs {
                             context,
                             ViewReportDialog(report: report),
                           ),
-
                           onEdit: () async {
-                            await openDialog(
+                            final CreateUpdateReportWithEntries? result =
+                                await openDialog(
                               context,
-                              const CreateReportDialog(),
+                              CreateUpdateReportDialog(report: report),
                             );
+                            if (result != null) {
+                              reportsStore.update(report.id, result);
+                            }
                           },
                           // onDelete: () => reportsStore.delete(report.id),
                           report: report,
@@ -46,9 +48,9 @@ class ReportsPage extends StatelessWidget with Dialogs {
               )),
       floatingActionButton: FloatingAddButton(
         onPressed: () async {
-          final CreateReportWithEntries? result = await openDialog(
+          final CreateUpdateReportWithEntries? result = await openDialog(
             context,
-            const CreateReportDialog(),
+            const CreateUpdateReportDialog(),
           );
           if (result != null) {
             reportsStore.create(result);

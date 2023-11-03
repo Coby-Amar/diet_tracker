@@ -9,15 +9,19 @@ import 'package:diet_tracker/widgets/app_autocomplete.dart';
 class _CreateEntryFormState {
   DisplayProduct? product;
   int? amount;
+  _CreateEntryFormState({this.product, this.amount});
 }
 
-class CreateReportEntry extends StatelessWidget {
-  final void Function(CreateEntry? entryData) onSaved;
+class CreateUpdateReportEntry extends StatelessWidget {
+  final TextEditingController _controller = TextEditingController(text: "");
+  final CreateUpdateEntry? entry;
+  final void Function(CreateUpdateEntry? entryData) onSaved;
   final void Function(BuildContext) onDelete;
-  const CreateReportEntry({
+  CreateUpdateReportEntry({
     super.key,
     required this.onSaved,
     required this.onDelete,
+    this.entry,
   });
 
   void _onSaved(_CreateEntryFormState? newValue) {
@@ -26,7 +30,7 @@ class CreateReportEntry extends StatelessWidget {
     final entryAmount = newValue.amount;
     if (product == null || entryAmount == null) return;
     final amount = entryAmount / product.amount;
-    final entry = CreateEntry.empty();
+    final entry = CreateUpdateEntry.empty();
     entry.productId = newValue.product!.id;
     entry.amount = entryAmount;
     entry.carbohydrates = amount * product.carbohydrate;
@@ -54,7 +58,12 @@ class CreateReportEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     final products = context.read<ProductsStore>().products;
     return FormField<_CreateEntryFormState>(
-      initialValue: _CreateEntryFormState(),
+      initialValue: _CreateEntryFormState(
+        product: products
+            .where((element) => element.id == entry?.productId)
+            .firstOrNull,
+        amount: entry?.amount,
+      ),
       onSaved: _onSaved,
       validator: _onValidate,
       builder: (field) {
@@ -66,6 +75,8 @@ class CreateReportEntry extends StatelessWidget {
               children: [
                 Expanded(
                   child: AppAutocomplete<DisplayProduct>(
+                    initialValue: TextEditingValue(
+                        text: field.value?.product?.name ?? ""),
                     label: 'מוצר',
                     errorText: hasError ? '' : null,
                     optionsBuilder: (textEditingValue) => products
@@ -81,6 +92,8 @@ class CreateReportEntry extends StatelessWidget {
                 const Padding(padding: EdgeInsets.all(10)),
                 Expanded(
                   child: TextField(
+                    controller: _controller
+                      ..text = field.value?.amount?.toString() ?? "",
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'כמות',

@@ -45,8 +45,18 @@ mixin _$ReportsStore on _ReportsStore, Store {
       AsyncAction('_ReportsStore.create', context: context);
 
   @override
-  Future<void> create(CreateReportWithEntries reportWithEntries) {
+  Future<void> create(CreateUpdateReportWithEntries reportWithEntries) {
     return _$createAsyncAction.run(() => super.create(reportWithEntries));
+  }
+
+  late final _$updateAsyncAction =
+      AsyncAction('_ReportsStore.update', context: context);
+
+  @override
+  Future<void> update(
+      String reportId, CreateUpdateReportWithEntries reportWithEntries) {
+    return _$updateAsyncAction
+        .run(() => super.update(reportId, reportWithEntries));
   }
 
   late final _$deleteAsyncAction =

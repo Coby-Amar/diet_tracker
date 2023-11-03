@@ -10,7 +10,7 @@ class DailyLimit extends StatelessWidget {
     return DialogScaffoldForm(
       title: 'הגבלה יומי',
       onSuccess: () {
-        return CreateEntry.empty();
+        return CreateUpdateEntry.empty();
       },
       formBuilder: (theme, validations) => Column(
         children: [

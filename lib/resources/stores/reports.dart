@@ -32,11 +32,24 @@ abstract class _ReportsStore with Store {
     if (loadedEntries != null) {
       return loadedEntries.map((e) => DisplayEntry(e)).toList();
     }
+    return null;
   }
 
   @action
-  Future<void> create(CreateReportWithEntries reportWithEntries) async {
+  Future<void> create(CreateUpdateReportWithEntries reportWithEntries) async {
     final createdReport = await _reportsApi.createReport(reportWithEntries);
+    if (createdReport != null) {
+      reports.add(DisplayReport(createdReport));
+    }
+  }
+
+  @action
+  Future<void> update(
+    String reportId,
+    CreateUpdateReportWithEntries reportWithEntries,
+  ) async {
+    final createdReport =
+        await _reportsApi.updateReport(reportId, reportWithEntries);
     if (createdReport != null) {
       reports.add(DisplayReport(createdReport));
     }

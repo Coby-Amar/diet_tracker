@@ -3,7 +3,7 @@ import 'package:diet_tracker/resources/models/create.dart';
 import 'package:diet_tracker/resources/models/api.dart';
 
 class ProductsApi {
-  final dioClient = DioClient().dio;
+  final dioClient = DioClient();
   Future<List<ApiProduct>?> getProducts() async {
     final response = await dioClient.get("products");
     if (response.data != null) {

@@ -1,4 +1,3 @@
-import 'package:diet_tracker/dialogs/are_you_sure.dart.dart';
 import 'package:diet_tracker/dialogs/daily_limit.dart';
 import 'package:diet_tracker/mixins/dialogs.dart';
 import 'package:diet_tracker/resources/stores/info.dart';
@@ -29,7 +28,7 @@ class SettingsPage extends StatelessWidget with Dialogs {
               final response = await openAreYouSureDialog(context);
               if (response) {
                 await infoStore.logout();
-                if (!infoStore.loggedIn) {
+                if (!infoStore.isLoggedIn) {
                   navigation.pushReplacementNamed("login");
                 }
               }

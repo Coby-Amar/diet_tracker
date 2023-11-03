@@ -138,6 +138,10 @@ class DisplayReport extends DisplayModel {
 
   const DisplayReport(this._report);
 
+  DateTime get date {
+    return _report.date;
+  }
+
   String get id {
     return _report.id;
   }
@@ -176,7 +180,7 @@ class DisplayReport extends DisplayModel {
 }
 
 /// ----------------------------------------------------------------------------
-/// DisplayReportWithEntries extends DisplayModelImplementation
+/// DisplayReportWithEntries extends DisplayModel
 /// ----------------------------------------------------------------------------
 class DisplayReportWithEntries extends DisplayModel {
   final DisplayReport report;

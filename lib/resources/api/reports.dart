@@ -3,7 +3,7 @@ import 'package:diet_tracker/resources/models/create.dart';
 import 'package:diet_tracker/resources/models/api.dart';
 
 class ReportsApi {
-  final dioClient = DioClient().dio;
+  final dioClient = DioClient();
 
   Future<List<ApiReport>?> getReports() async {
     try {
@@ -34,10 +34,12 @@ class ReportsApi {
   }
 
   Future<ApiReport?> createReport(
-    CreateReportWithEntries reportWithEntries,
+    CreateUpdateReportWithEntries reportWithEntries,
   ) async {
     try {
-      final response = await dioClient.post("reports", data: reportWithEntries);
+      final response = await dioClient.post(
+        "reports",
+      );
       final data = response.data;
       if (data is Map<String, dynamic>) {
         return ApiReport.fromMap(data);
@@ -49,9 +51,12 @@ class ReportsApi {
     }
   }
 
-  Future<ApiReport?> updateReport(ApiReport report) async {
+  Future<ApiReport?> updateReport(
+    String reportId,
+    CreateUpdateReportWithEntries reportWithEntries,
+  ) async {
     final response =
-        await dioClient.patch("reports/${report.id}", data: report);
+        await dioClient.patch("reports/$reportId", data: reportWithEntries);
     if (response.data) {
       return ApiReport.fromMap(response.data);
     }
@@ -67,7 +72,7 @@ class ReportsApi {
     }
   }
 
-  Future<ApiEntry?> createEntry(CreateEntry entry) async {
+  Future<ApiEntry?> createEntry(CreateUpdateEntry entry) async {
     final response = await dioClient.post("reports", data: entry);
     if (response.data) {
       return ApiEntry.fromMap(response.data);

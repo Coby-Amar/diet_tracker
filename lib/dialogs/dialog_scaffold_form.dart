@@ -29,7 +29,7 @@ class DialogScaffoldForm extends StatelessWidget with Dialogs {
         centerTitle: true,
       ),
       body: Form(
-        onWillPop: () => openAreYouSureDialog(context),
+        // onWillPop: () => openAreYouSureDialog(context),
         key: _formKey,
         child: Column(
           children: [
