@@ -13,13 +13,13 @@ mixin _$ProductsStore on _ProductsStore, Store {
       Atom(name: '_ProductsStore.products', context: context);
 
   @override
-  ObservableList<DisplayProduct> get products {
+  ObservableList<ApiProduct> get products {
     _$productsAtom.reportRead();
     return super.products;
   }
 
   @override
-  set products(ObservableList<DisplayProduct> value) {
+  set products(ObservableList<ApiProduct> value) {
     _$productsAtom.reportWrite(value, super.products, () {
       super.products = value;
     });
@@ -37,7 +37,7 @@ mixin _$ProductsStore on _ProductsStore, Store {
       AsyncAction('_ProductsStore.create', context: context);
 
   @override
-  Future<void> create(CreateProduct productModel) {
+  Future<void> create(DisplayProductModel productModel) {
     return _$createAsyncAction.run(() => super.create(productModel));
   }
 
@@ -45,7 +45,7 @@ mixin _$ProductsStore on _ProductsStore, Store {
       AsyncAction('_ProductsStore.update', context: context);
 
   @override
-  Future<void> update(ApiProduct product) {
+  Future<void> update(DisplayProductModel product) {
     return _$updateAsyncAction.run(() => super.update(product));
   }
 

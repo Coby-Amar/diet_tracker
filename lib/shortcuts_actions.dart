@@ -29,9 +29,9 @@ class ShortcutsAndActions {
   static final Map<Type, Action<Intent>> backShortcutsActions = {
     _GoBackIntent: CallbackAction(
       onInvoke: (intent) {
-        final canPop = navigatorKey.currentState?.canPop() ?? false;
+        final canPop = rootNavigationKey.currentState?.canPop() ?? false;
         if (canPop) {
-          navigatorKey.currentState?.pop();
+          rootNavigationKey.currentState?.pop();
         }
         return;
       },

@@ -7,12 +7,13 @@ class AutoLogoutInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == 401) {
-      final authStore =
-          Provider.of<InfoStore>(navigatorKey.currentContext!, listen: false);
+      final authStore = Provider.of<InfoStore>(
+          rootNavigationKey.currentContext!,
+          listen: false);
       if (authStore.isLoggedIn) {
         authStore.logout();
       }
-      navigatorKey.currentState?.pushReplacementNamed("login");
+      rootNavigationKey.currentState?.pushReplacementNamed("login");
       return;
     }
     super.onError(err, handler);

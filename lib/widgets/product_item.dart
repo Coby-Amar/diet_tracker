@@ -1,19 +1,17 @@
 import 'dart:io';
 
-import 'package:diet_tracker/resources/models/display.dart';
+import 'package:diet_tracker/resources/models/api.dart';
 import 'package:diet_tracker/widgets/slideable_page_item.dart';
 import 'package:flutter/material.dart';
 
 class ProductItem extends StatelessWidget {
-  final DisplayProduct product;
+  final ApiProduct product;
   final VoidCallback onEdit;
-  final VoidCallback onUpdate;
   final VoidCallback onDelete;
   const ProductItem({
     super.key,
     required this.product,
     required this.onEdit,
-    required this.onUpdate,
     required this.onDelete,
   });
 
@@ -23,7 +21,6 @@ class ProductItem extends StatelessWidget {
     return SlidablePageItem(
       onEdit: onEdit,
       onDelete: onDelete,
-      onUpdate: onUpdate,
       child: Container(
         color: theme.cardColor,
         width: Size.infinite.width,

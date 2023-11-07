@@ -35,12 +35,13 @@ class DioClient {
 
   post(String path, {Object? data}) async =>
       (await _getDio()).post(path, data: data);
-  patch(String path, {Object? data}) async => (await _getDio()).patch(path);
+  put(String path, {Object? data}) async =>
+      (await _getDio()).put(path, data: data);
   delete(String path) async => (await _getDio()).delete(path);
 
   Future<void> _prepareIntercepters() async {
     final dio = Dio(BaseOptions(
-      baseUrl: "http://10.100.102.41:8080/api/v1/",
+      baseUrl: "http://localhost:8080/api/v1/",
       contentType: 'application/json',
     ));
     dio.interceptors.add(AutoLogoutInterceptor());

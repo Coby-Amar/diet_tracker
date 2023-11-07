@@ -1,14 +1,15 @@
+import 'package:diet_tracker/resources/formatters/numbers.dart';
+import 'package:diet_tracker/resources/models/api.dart';
 import 'package:diet_tracker/resources/stores/reports.dart';
 import 'package:diet_tracker/widgets/report_table.dart';
 import 'package:diet_tracker/widgets/table_cell_text.dart';
 import 'package:diet_tracker/widgets/table_cell_text_header_footer.dart';
 import 'package:flutter/material.dart';
 
-import 'package:diet_tracker/resources/models/display.dart';
 import 'package:provider/provider.dart';
 
 class ViewReportDialog extends StatelessWidget {
-  final DisplayReport report;
+  final ApiReport report;
   const ViewReportDialog({
     super.key,
     required this.report,
@@ -32,7 +33,7 @@ class ViewReportDialog extends StatelessWidget {
               ),
             ),
             FutureBuilder(
-              future: reportsStore.loadEntries(report),
+              future: reportsStore.loadEntries(report.id),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   if (snapshot.data == null) {
@@ -48,22 +49,33 @@ class ViewReportDialog extends StatelessWidget {
                       ],
                       entries: snapshot.data!.map((entry) => TableRow(
                             children: [
-                              TableCellText(label: entry.amountString),
-                              TableCellText(label: entry.carbohydratesString),
-                              TableCellText(label: entry.proteinsString),
-                              TableCellText(label: entry.fatsString),
+                              TableCellText(label: entry.amount.toString()),
+                              TableCellText(
+                                label: NumbersFormmater.toFixed2(
+                                  entry.carbohydrates,
+                                ),
+                              ),
+                              TableCellText(
+                                label:
+                                    NumbersFormmater.toFixed2(entry.proteins),
+                              ),
+                              TableCellText(
+                                  label: NumbersFormmater.toFixed2(entry.fats)),
                             ],
                           )),
                       footer: [
                         const TableCellTextHeaderFooter(label: "סכום"),
                         TableCellTextHeaderFooter(
-                          label: report.carbohydratesTotalString,
+                          label: NumbersFormmater.toFixed2(
+                            report.carbohydratesTotal,
+                          ),
                         ),
                         TableCellTextHeaderFooter(
-                          label: report.proteinsTotalString,
+                          label:
+                              NumbersFormmater.toFixed2(report.proteinsTotal),
                         ),
                         TableCellTextHeaderFooter(
-                          label: report.fatsTotalString,
+                          label: NumbersFormmater.toFixed2(report.fatsTotal),
                         ),
                       ],
                     ),

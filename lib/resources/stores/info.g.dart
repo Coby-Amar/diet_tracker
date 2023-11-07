@@ -19,13 +19,13 @@ mixin _$InfoStore on _InfoStore, Store {
   late final _$userAtom = Atom(name: '_InfoStore.user', context: context);
 
   @override
-  DisplayUser? get user {
+  ApiUser? get user {
     _$userAtom.reportRead();
     return super.user;
   }
 
   @override
-  set user(DisplayUser? value) {
+  set user(ApiUser? value) {
     _$userAtom.reportWrite(value, super.user, () {
       super.user = value;
     });
@@ -43,7 +43,7 @@ mixin _$InfoStore on _InfoStore, Store {
       AsyncAction('_InfoStore.register', context: context);
 
   @override
-  Future<void> register(CreateRegistration model) {
+  Future<void> register(Registration model) {
     return _$registerAsyncAction.run(() => super.register(model));
   }
 
@@ -51,7 +51,7 @@ mixin _$InfoStore on _InfoStore, Store {
       AsyncAction('_InfoStore.login', context: context);
 
   @override
-  Future<void> login(CreateLogin loginModel) {
+  Future<void> login(Login loginModel) {
     return _$loginAsyncAction.run(() => super.login(loginModel));
   }
 

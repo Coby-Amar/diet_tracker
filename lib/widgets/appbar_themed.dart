@@ -1,13 +1,17 @@
 import 'package:diet_tracker/mixins/routing.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AppBarThemed extends StatelessWidget
     with Routing
     implements PreferredSizeWidget {
   final String title;
   final bool showActions;
-  const AppBarThemed(
-      {super.key, required this.title, this.showActions = false});
+  const AppBarThemed({
+    super.key,
+    required this.title,
+    this.showActions = false,
+  });
 
   @override
   AppBar build(BuildContext context) {
@@ -26,7 +30,7 @@ class AppBarThemed extends StatelessWidget
       actions: showActions
           ? [
               IconButton(
-                  onPressed: onPressedNavigateToNamed(context, 'settings'),
+                  onPressed: () => context.pushNamed("settings"),
                   icon: Icon(
                     Icons.settings,
                     color: theme.primaryColorDark,

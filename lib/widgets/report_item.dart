@@ -1,4 +1,5 @@
-import 'package:diet_tracker/resources/models/display.dart';
+import 'package:diet_tracker/resources/formatters/numbers.dart';
+import 'package:diet_tracker/resources/models/api.dart';
 import 'package:diet_tracker/resources/stores/info.dart';
 import 'package:diet_tracker/widgets/report_table.dart';
 import 'package:diet_tracker/widgets/table_cell_text.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ReportItem extends StatelessWidget {
-  final DisplayReport report;
+  final ApiReport report;
   final VoidCallback onView;
   final VoidCallback onEdit;
   const ReportItem({
@@ -49,32 +50,39 @@ class ReportItem extends StatelessWidget {
                 TableRow(
                   children: [
                     const TableCellText(label: "סכום"),
-                    TableCellText(label: report.carbohydratesTotalString),
-                    TableCellText(label: report.proteinsTotalString),
-                    TableCellText(label: report.fatsTotalString),
+                    TableCellText(
+                      label:
+                          NumbersFormmater.toFixed2(report.carbohydratesTotal),
+                    ),
+                    TableCellText(
+                      label: NumbersFormmater.toFixed2(report.proteinsTotal),
+                    ),
+                    TableCellText(
+                      label: NumbersFormmater.toFixed2(report.fatsTotal),
+                    ),
                   ],
                 ),
                 TableRow(
                   children: [
                     const TableCellText(label: "מותר"),
-                    TableCellText(label: user.carbohydrateString),
-                    TableCellText(label: user.proteinString),
-                    TableCellText(label: user.fatString),
+                    TableCellText(label: user.carbohydrate),
+                    TableCellText(label: user.protein),
+                    TableCellText(label: user.fat),
                   ],
                 ),
               ],
               footer: [
                 const TableCellTextHeaderFooter(label: "נותר"),
                 TableCellReportItemRemainingText(
-                  limit: user.carbohydrate,
+                  limit: user.dailyLimits.carbohydrate,
                   total: report.carbohydratesTotal,
                 ),
                 TableCellReportItemRemainingText(
-                  limit: user.protein,
+                  limit: user.dailyLimits.protein,
                   total: report.proteinsTotal,
                 ),
                 TableCellReportItemRemainingText(
-                  limit: user.fat,
+                  limit: user.dailyLimits.fat,
                   total: report.fatsTotal,
                 ),
               ],

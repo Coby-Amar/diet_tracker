@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:diet_tracker/resources/models/display.dart';
+import 'package:diet_tracker/resources/models/base.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 

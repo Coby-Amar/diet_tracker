@@ -9,7 +9,7 @@ void onPointerDown(PointerDownEvent event) {
 }
 
 void _onMouseBackEvent() {
-  if (navigatorKey.currentState?.canPop() ?? false) {
-    navigatorKey.currentState?.pop();
+  if (rootNavigationKey.currentState?.canPop() ?? false) {
+    rootNavigationKey.currentState?.pop();
   }
 }

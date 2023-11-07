@@ -1,4 +1,4 @@
-import 'package:diet_tracker/resources/models/create.dart';
+import 'package:diet_tracker/resources/models/api.dart';
 import 'package:diet_tracker/resources/models/display.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,15 +7,15 @@ import 'package:diet_tracker/resources/stores/products.dart';
 import 'package:diet_tracker/widgets/app_autocomplete.dart';
 
 class _CreateEntryFormState {
-  DisplayProduct? product;
+  ApiProduct? product;
   int? amount;
   _CreateEntryFormState({this.product, this.amount});
 }
 
 class CreateUpdateReportEntry extends StatelessWidget {
   final TextEditingController _controller = TextEditingController(text: "");
-  final CreateUpdateEntry? entry;
-  final void Function(CreateUpdateEntry? entryData) onSaved;
+  final DisplayEntry? entry;
+  final void Function(DisplayEntry? entryData) onSaved;
   final void Function(BuildContext) onDelete;
   CreateUpdateReportEntry({
     super.key,
@@ -30,7 +30,7 @@ class CreateUpdateReportEntry extends StatelessWidget {
     final entryAmount = newValue.amount;
     if (product == null || entryAmount == null) return;
     final amount = entryAmount / product.amount;
-    final entry = CreateUpdateEntry.empty();
+    final entry = DisplayEntry();
     entry.productId = newValue.product!.id;
     entry.amount = entryAmount;
     entry.carbohydrates = amount * product.carbohydrate;
@@ -74,7 +74,7 @@ class CreateUpdateReportEntry extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: AppAutocomplete<DisplayProduct>(
+                  child: AppAutocomplete<ApiProduct>(
                     initialValue: TextEditingValue(
                         text: field.value?.product?.name ?? ""),
                     label: 'מוצר',

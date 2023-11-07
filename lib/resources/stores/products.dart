@@ -1,9 +1,8 @@
 import 'package:diet_tracker/resources/models/api.dart';
+import 'package:diet_tracker/resources/models/display.dart';
 import 'package:mobx/mobx.dart';
 
 import 'package:diet_tracker/resources/api/products.dart';
-import 'package:diet_tracker/resources/models/create.dart';
-import 'package:diet_tracker/resources/models/display.dart';
 
 part 'products.g.dart';
 
@@ -17,22 +16,22 @@ abstract class _ProductsStore with Store {
   final _productsApi = ProductsApi();
 
   @observable
-  var products = ObservableList<DisplayProduct>();
+  var products = ObservableList<ApiProduct>();
 
   @action
   Future<void> load() async {
     final fetchedProducts = await _productsApi.getProducts();
     if (fetchedProducts != null) {
-      products.addAll(fetchedProducts.map((e) => DisplayProduct(e)));
+      products.addAll(fetchedProducts);
     }
   }
 
   @action
-  Future<void> create(CreateProduct productModel) async {
+  Future<void> create(DisplayProductModel productModel) async {
     try {
       final createdProduct = await _productsApi.createProduct(productModel);
       if (createdProduct != null) {
-        products.add(DisplayProduct(createdProduct));
+        products.add(createdProduct);
       }
     } catch (e) {
       print("CreateProduct: $e");
@@ -40,7 +39,7 @@ abstract class _ProductsStore with Store {
   }
 
   @action
-  Future<void> update(ApiProduct product) async {
+  Future<void> update(DisplayProductModel product) async {
     try {
       final updatedProduct = await _productsApi.updateProduct(product);
       if (updatedProduct != null) {
@@ -50,7 +49,7 @@ abstract class _ProductsStore with Store {
           products.replaceRange(
             foundIndex,
             foundIndex + 1,
-            [DisplayProduct(updatedProduct)],
+            [updatedProduct],
           );
         }
       }

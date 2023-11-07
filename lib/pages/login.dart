@@ -1,9 +1,11 @@
-import 'package:diet_tracker/pages/register.dart';
-import 'package:diet_tracker/resources/models/create.dart';
-import 'package:diet_tracker/resources/stores/info.dart';
-import 'package:diet_tracker/widgets/appbar_themed.dart';
+import 'package:diet_tracker/resources/models/display.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:diet_tracker/pages/register.dart';
+import 'package:diet_tracker/resources/stores/info.dart';
+import 'package:diet_tracker/widgets/appbar_themed.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,7 +16,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final CreateLogin _createLoginModel = CreateLogin.empty();
+  final _createLoginModel = Login();
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +83,10 @@ class _LoginPageState extends State<LoginPage> {
                       return;
                     }
                     _formKey.currentState?.save();
-                    final navigator = Navigator.of(context);
+                    final goNamed = context.goNamed;
                     await authStore.login(_createLoginModel);
                     if (authStore.isLoggedIn) {
-                      navigator.pushReplacementNamed("home");
+                      goNamed("home");
                     }
                   },
                   child: const Text("התחבר"),

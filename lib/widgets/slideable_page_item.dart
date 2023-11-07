@@ -4,13 +4,11 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 class SlidablePageItem extends StatelessWidget with Dialogs {
   final VoidCallback onEdit;
-  final VoidCallback onUpdate;
   final VoidCallback onDelete;
   final Widget child;
   const SlidablePageItem({
     super.key,
     required this.onEdit,
-    required this.onUpdate,
     required this.onDelete,
     required this.child,
   });
@@ -25,15 +23,9 @@ class SlidablePageItem extends StatelessWidget with Dialogs {
         motion: const BehindMotion(),
         children: [
           SlidableAction(
-            backgroundColor: theme.colorScheme.primary,
-            icon: Icons.preview_outlined,
-            onPressed: (context) => onEdit(),
-            label: "פרטים",
-          ),
-          SlidableAction(
             backgroundColor: const Color(0xFFFFD55E),
             icon: Icons.edit_outlined,
-            onPressed: (context) => onUpdate(),
+            onPressed: (context) => onEdit(),
             label: "עריכה",
           ),
           SlidableAction(

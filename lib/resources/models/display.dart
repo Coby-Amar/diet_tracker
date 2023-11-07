@@ -1,190 +1,192 @@
 import 'package:diet_tracker/resources/models/api.dart';
+import 'package:diet_tracker/resources/models/base.dart';
 
 /// ----------------------------------------------------------------------------
-/// abstract DisplayModel class
+/// class Registration extends DisplayModel
 /// ----------------------------------------------------------------------------
-abstract class DisplayModel {
-  const DisplayModel();
-}
+class Registration extends DisplayModel {
+  String username = "";
+  String password = "";
+  String name = "";
+  String phonenumber = "";
+  int carbohydrate = 0;
+  int protein = 0;
+  int fat = 0;
 
-/// ----------------------------------------------------------------------------
-/// abstract DisplayAutoCompleteModel class
-/// ----------------------------------------------------------------------------
-abstract class AutoCompleteModel {
-  String get toStringDisplay;
-}
-
-/// ----------------------------------------------------------------------------
-/// DisplayUser extends DisplayModel
-/// ----------------------------------------------------------------------------
-class DisplayUser extends DisplayModel {
-  final ApiUser _user;
-
-  const DisplayUser(this._user);
-
-  int get carbohydrate {
-    return _user.carbohydrate;
-  }
-
-  int get protein {
-    return _user.protein;
-  }
-
-  int get fat {
-    return _user.fat;
-  }
-
-  String get carbohydrateString {
-    return _user.carbohydrate.toStringAsFixed(2);
-  }
-
-  String get proteinString {
-    return _user.protein.toStringAsFixed(2);
-  }
-
-  String get fatString {
-    return _user.fat.toStringAsFixed(2);
-  }
-}
-
-/// ----------------------------------------------------------------------------
-/// DisplayProduct extends DisplayModel implements AutoCompleteModel
-/// ----------------------------------------------------------------------------
-class DisplayProduct extends DisplayModel implements AutoCompleteModel {
-  final ApiProduct _product;
-
-  const DisplayProduct(this._product);
-
-  String get id {
-    return _product.id;
-  }
-
-  String? get image {
-    return _product.image;
-  }
-
-  String get name {
-    return _product.name;
-  }
-
-  int get amount {
-    return _product.amount;
-  }
-
-  int get carbohydrate {
-    return _product.carbohydrate;
-  }
-
-  int get protein {
-    return _product.protein;
-  }
-
-  int get fat {
-    return _product.fat;
-  }
+  Registration();
 
   @override
-  String get toStringDisplay => _product.name;
+  Map<String, Object?> toMap() => {
+        "username": username,
+        "password": password,
+        "name": name,
+        "phonenumber": phonenumber,
+        "carbohydrate": carbohydrate,
+        "protein": protein,
+        "fat": fat,
+      };
 }
 
 /// ----------------------------------------------------------------------------
-/// DisplayEntry extends DisplayModel
+/// class Login extends DisplayModel
 /// ----------------------------------------------------------------------------
-class DisplayEntry extends DisplayModel {
-  final ApiEntry _entry;
-  const DisplayEntry(this._entry);
-  String get productId {
-    return _entry.productId;
-  }
+class Login extends DisplayModel {
+  String username = "";
+  String password = "";
 
-  int get amount {
-    return _entry.amount;
-  }
+  Login();
 
-  double get carbohydrates {
-    return _entry.carbohydrates;
-  }
-
-  double get proteins {
-    return _entry.proteins;
-  }
-
-  double get fats {
-    return _entry.fats;
-  }
-
-  String get amountString {
-    return _entry.amount.toString();
-  }
-
-  String get carbohydratesString {
-    return _entry.carbohydrates.toStringAsFixed(2);
-  }
-
-  String get proteinsString {
-    return _entry.proteins.toStringAsFixed(2);
-  }
-
-  String get fatsString {
-    return _entry.fats.toStringAsFixed(2);
-  }
+  @override
+  Map<String, Object?> toMap() => {
+        "username": username,
+        "password": password,
+      };
 }
 
 /// ----------------------------------------------------------------------------
-/// DisplayReport implements DisplayModel
+/// class DisplayUser extends DisplayModel<ApiUser>
 /// ----------------------------------------------------------------------------
-class DisplayReport extends DisplayModel {
-  final ApiReport _report;
+class DisplayUser extends DisplayModel<ApiUser> {
+  String name;
+  String phoneNumber;
 
-  const DisplayReport(this._report);
+  DisplayUser.fromApi(super.apiModel)
+      : name = apiModel.name,
+        phoneNumber = apiModel.phoneNumber,
+        super.fromApi();
 
-  DateTime get date {
-    return _report.date;
-  }
-
-  String get id {
-    return _report.id;
-  }
-
-  double get carbohydratesTotal {
-    return _report.carbohydratesTotal;
-  }
-
-  double get proteinsTotal {
-    return _report.proteinsTotal;
-  }
-
-  double get fatsTotal {
-    return _report.fatsTotal;
-  }
-
-  String get carbohydratesTotalString {
-    return _report.carbohydratesTotal.toStringAsFixed(2);
-  }
-
-  String get proteinsTotalString {
-    return _report.proteinsTotal.toStringAsFixed(2);
-  }
-
-  String get fatsTotalString {
-    return _report.fatsTotal.toStringAsFixed(2);
-  }
-
-  String get formattedDate {
-    final date = _report.date;
-    final day = date.day;
-    final month = date.month;
-    final year = date.year;
-    return '$day/$month/$year';
-  }
+  @override
+  Map<String, Object?> toMap() => {
+        "name": name,
+        "phoneNumber": phoneNumber,
+      };
 }
 
 /// ----------------------------------------------------------------------------
-/// DisplayReportWithEntries extends DisplayModel
+/// class DisplayDailyLimits extends DisplayModel<ApiDailyLimits>
 /// ----------------------------------------------------------------------------
-class DisplayReportWithEntries extends DisplayModel {
-  final DisplayReport report;
-  final List<DisplayEntry> entries;
+class DisplayDailyLimits extends DisplayModel<ApiDailyLimits> {
+  int carbohydrate;
+  int protein;
+  int fat;
 
-  const DisplayReportWithEntries(this.report, this.entries);
+  DisplayDailyLimits.fromApi(super.apiModel)
+      : carbohydrate = apiModel.carbohydrate,
+        protein = apiModel.protein,
+        fat = apiModel.fat,
+        super.fromApi();
+
+  @override
+  Map<String, Object?> toMap() => {
+        "carbohydrate": carbohydrate,
+        "protein": protein,
+        "fat": fat,
+      };
+}
+
+/// ----------------------------------------------------------------------------
+/// class DisplayProductModel extends DisplayModel<ApiProduct>
+/// ----------------------------------------------------------------------------
+class DisplayProductModel extends DisplayModel<ApiProduct> {
+  String id = "";
+  String? image = "";
+  String name = "";
+  int amount = 0;
+  int carbohydrate = 0;
+  int protein = 0;
+  int fat = 0;
+
+  DisplayProductModel();
+  DisplayProductModel.fromApi(super.apiModel)
+      : id = apiModel.id,
+        image = apiModel.image,
+        name = apiModel.name,
+        amount = apiModel.amount,
+        carbohydrate = apiModel.carbohydrate,
+        protein = apiModel.protein,
+        fat = apiModel.fat,
+        super.fromApi();
+
+  @override
+  Map<String, Object?> toMap() => {
+        "id": id,
+        "image": image,
+        "name": name,
+        "amount": amount,
+        "carbohydrate": carbohydrate,
+        "protein": protein,
+        "fat": fat,
+      };
+}
+
+/// ----------------------------------------------------------------------------
+/// class DisplayEntry extends DisplayModel<ApiEntry>
+/// ----------------------------------------------------------------------------
+class DisplayEntry extends DisplayModel<ApiEntry> {
+  String productId = "";
+  int amount = 0;
+  double carbohydrates = 0;
+  double proteins = 0;
+  double fats = 0;
+  DisplayEntry();
+  DisplayEntry.fromApi(super.apiModel)
+      : productId = apiModel.productId,
+        amount = apiModel.amount,
+        carbohydrates = apiModel.carbohydrates,
+        proteins = apiModel.proteins,
+        fats = apiModel.fats,
+        super.fromApi();
+
+  @override
+  Map<String, dynamic> toMap() => {
+        "productId": productId,
+        "amount": amount,
+        "carbohydrates": carbohydrates,
+        "proteins": proteins,
+        "fats": fats,
+      };
+}
+
+/// ----------------------------------------------------------------------------
+/// class DisplayReportModel extends DisplayModel<ApiReport>
+/// ----------------------------------------------------------------------------
+class DisplayReportModel extends DisplayModel<ApiReport> {
+  DateTime date = DateTime(0000);
+  double carbohydratesTotal = 0;
+  double proteinsTotal = 0;
+  double fatsTotal = 0;
+
+  DisplayReportModel();
+  DisplayReportModel.fromApi(super.apiModel)
+      : date = apiModel.date,
+        carbohydratesTotal = apiModel.carbohydratesTotal,
+        proteinsTotal = apiModel.proteinsTotal,
+        fatsTotal = apiModel.fatsTotal,
+        super.fromApi();
+
+  @override
+  Map<String, Object?> toMap() => {
+        "date": date,
+        "carbohydratesTotal": carbohydratesTotal,
+        "proteinsTotal": proteinsTotal,
+        "fatsTotal": fatsTotal,
+      };
+}
+
+/// ----------------------------------------------------------------------------
+/// class DisplayReportModel extends DisplayModel<ApiReport>
+/// ----------------------------------------------------------------------------
+class DisplayReportWithEntries {
+  DisplayReportModel report = DisplayReportModel();
+  List<DisplayEntry> entries = [];
+
+  DisplayReportWithEntries();
+  DisplayReportWithEntries.fromApi(ApiReport report, List<ApiEntry> entries)
+      : report = DisplayReportModel.fromApi(report),
+        entries = entries.map((e) => DisplayEntry.fromApi(e)).toList();
+
+  Map<String, Object?> toMap() => {
+        "report": report.toMap(),
+        "entries": entries.map((entry) => entry.toMap()).toList(),
+      };
 }

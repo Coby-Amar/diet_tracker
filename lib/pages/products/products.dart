@@ -1,6 +1,5 @@
-import 'package:diet_tracker/dialogs/create_product.dart';
 import 'package:diet_tracker/mixins/dialogs.dart';
-import 'package:diet_tracker/resources/models/create.dart';
+import 'package:diet_tracker/resources/models/display.dart';
 import 'package:diet_tracker/resources/stores/products.dart';
 import 'package:diet_tracker/widgets/appbar_themed.dart';
 import 'package:diet_tracker/widgets/floating_add_button.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:diet_tracker/widgets/product_item.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ProductsPage extends StatelessWidget with Dialogs {
@@ -16,6 +16,7 @@ class ProductsPage extends StatelessWidget with Dialogs {
   @override
   Widget build(BuildContext context) {
     final productsStore = context.read<ProductsStore>();
+    final products = productsStore.products;
     return Scaffold(
       appBar: const AppBarThemed(
         title: 'מוצרים',
@@ -23,27 +24,20 @@ class ProductsPage extends StatelessWidget with Dialogs {
       ),
       body: Observer(
         builder: (_) => ListView.separated(
-          itemBuilder: (context, index) => ProductItem(
-            product: productsStore.products[index],
-            onEdit: () {},
-            onUpdate: () => {},
-            onDelete: () =>
-                productsStore.delete(productsStore.products[index].id),
-          ),
-          itemCount: productsStore.products.length,
+          itemCount: products.length,
           separatorBuilder: (context, index) => const Divider(),
+          itemBuilder: (context, index) => ProductItem(
+            product: products[index],
+            onEdit: () => context.goNamed(
+              "update_product",
+              extra: DisplayProductModel.fromApi(products[index]),
+            ),
+            onDelete: () => productsStore.delete(products[index].id),
+          ),
         ),
       ),
       floatingActionButton: FloatingAddButton(
-        onPressed: () async {
-          final result = await openDialog<CreateProduct>(
-            context,
-            const CreateProductDialog(),
-          );
-          if (result != null) {
-            productsStore.create(result);
-          }
-        },
+        onPressed: () => context.goNamed("create_product"),
       ),
     );
   }

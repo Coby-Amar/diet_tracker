@@ -1,8 +1,9 @@
-import 'package:diet_tracker/resources/models/create.dart';
-import 'package:diet_tracker/resources/stores/info.dart';
-import 'package:diet_tracker/widgets/appbar_themed.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:diet_tracker/resources/models/display.dart';
+import 'package:diet_tracker/resources/stores/info.dart';
+import 'package:diet_tracker/widgets/appbar_themed.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -13,7 +14,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
-  final model = CreateRegistration.empty();
+  final model = Registration();
 
   @override
   Widget build(BuildContext context) {

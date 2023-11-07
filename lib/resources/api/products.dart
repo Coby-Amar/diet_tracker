@@ -1,6 +1,6 @@
 import 'package:diet_tracker/dio_client.dart';
-import 'package:diet_tracker/resources/models/create.dart';
 import 'package:diet_tracker/resources/models/api.dart';
+import 'package:diet_tracker/resources/models/display.dart';
 
 class ProductsApi {
   final dioClient = DioClient();
@@ -14,7 +14,7 @@ class ProductsApi {
     return null;
   }
 
-  Future<ApiProduct?> createProduct(CreateProduct product) async {
+  Future<ApiProduct?> createProduct(DisplayProductModel product) async {
     final response = await dioClient.post("products", data: product);
     if (response.data is Map) {
       return ApiProduct.fromMap(response.data);
@@ -22,12 +22,9 @@ class ProductsApi {
     return null;
   }
 
-  Future<ApiProduct?> updateProduct(
-    ApiProduct product,
-  ) async {
-    final response =
-        await dioClient.patch("products/${product.id}", data: product);
-    if (response.data) {
+  Future<ApiProduct?> updateProduct(DisplayProductModel product) async {
+    final response = await dioClient.put("products", data: product);
+    if (response.data is Map) {
       return ApiProduct.fromMap(response.data);
     }
     return null;

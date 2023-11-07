@@ -13,13 +13,13 @@ mixin _$ReportsStore on _ReportsStore, Store {
       Atom(name: '_ReportsStore.reports', context: context);
 
   @override
-  ObservableList<DisplayReport> get reports {
+  ObservableList<ApiReport> get reports {
     _$reportsAtom.reportRead();
     return super.reports;
   }
 
   @override
-  set reports(ObservableList<DisplayReport> value) {
+  set reports(ObservableList<ApiReport> value) {
     _$reportsAtom.reportWrite(value, super.reports, () {
       super.reports = value;
     });
@@ -37,15 +37,15 @@ mixin _$ReportsStore on _ReportsStore, Store {
       AsyncAction('_ReportsStore.loadEntries', context: context);
 
   @override
-  Future<List<DisplayEntry>?> loadEntries(DisplayReport report) {
-    return _$loadEntriesAsyncAction.run(() => super.loadEntries(report));
+  Future<List<ApiEntry>?> loadEntries(String reportId) {
+    return _$loadEntriesAsyncAction.run(() => super.loadEntries(reportId));
   }
 
   late final _$createAsyncAction =
       AsyncAction('_ReportsStore.create', context: context);
 
   @override
-  Future<void> create(CreateUpdateReportWithEntries reportWithEntries) {
+  Future<void> create(DisplayReportWithEntries reportWithEntries) {
     return _$createAsyncAction.run(() => super.create(reportWithEntries));
   }
 
@@ -53,10 +53,8 @@ mixin _$ReportsStore on _ReportsStore, Store {
       AsyncAction('_ReportsStore.update', context: context);
 
   @override
-  Future<void> update(
-      String reportId, CreateUpdateReportWithEntries reportWithEntries) {
-    return _$updateAsyncAction
-        .run(() => super.update(reportId, reportWithEntries));
+  Future<void> update(DisplayReportWithEntries reportWithEntries) {
+    return _$updateAsyncAction.run(() => super.update(reportWithEntries));
   }
 
   late final _$deleteAsyncAction =

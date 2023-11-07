@@ -8,6 +8,7 @@ typedef DailogCallback<T> = Future<T?> Function();
 mixin Dialogs {
   Future<T?> openDialog<T>(BuildContext context, Widget dialog) => showDialog(
         context: context,
+        useSafeArea: true,
         builder: (context) => dialog,
       );
 

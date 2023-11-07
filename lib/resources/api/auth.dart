@@ -1,6 +1,6 @@
 import 'package:diet_tracker/dio_client.dart';
-import 'package:diet_tracker/resources/models/create.dart';
 import 'package:diet_tracker/resources/models/api.dart';
+import 'package:diet_tracker/resources/models/display.dart';
 
 class AuthApi {
   final dioClient = DioClient();
@@ -18,7 +18,7 @@ class AuthApi {
     }
   }
 
-  Future<ApiUser?> register(CreateRegistration model) async {
+  Future<ApiUser?> register(Registration model) async {
     try {
       final response = await dioClient.post("auth/register", data: model);
       final data = response.data;
@@ -31,7 +31,7 @@ class AuthApi {
     }
   }
 
-  Future<ApiUser?> login(CreateLogin loginModel) async {
+  Future<ApiUser?> login(Login loginModel) async {
     try {
       final response = await dioClient.post(
         "auth/login",
