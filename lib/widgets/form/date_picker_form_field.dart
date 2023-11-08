@@ -29,7 +29,7 @@ class DatePicketFormField extends StatelessWidget {
           onTap: () async {
             final result = await showDatePicker(
               context: context,
-              initialDate: _today,
+              initialDate: initialValue ?? _today,
               firstDate: _today.add(-const Duration(days: 365)),
               lastDate: _today,
             );
