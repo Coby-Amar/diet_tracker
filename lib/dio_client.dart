@@ -41,7 +41,7 @@ class DioClient {
 
   Future<void> _prepareIntercepters() async {
     final dio = Dio(BaseOptions(
-      baseUrl: "http://localhost:8080/api/v1/",
+      baseUrl: "http://10.0.2.2:8080/api/v1/",
       contentType: 'application/json',
     ));
     dio.interceptors.add(AutoLogoutInterceptor());
