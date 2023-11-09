@@ -152,10 +152,14 @@ class DisplayEntry extends DisplayModel<ApiEntry> implements UpdateableModel {
     fats = calculatedAmount * product.fat;
   }
 
-  DisplayProductModel getProduct(List<ApiProduct> products) {
+  ApiProduct getProduct(List<ApiProduct> products) {
     final foundProduct =
         products.firstWhere((element) => element.id == productId);
-    return DisplayProductModel.fromApi(foundProduct);
+    return foundProduct;
+  }
+
+  DisplayProductModel getDisplayProduct(List<ApiProduct> products) {
+    return DisplayProductModel.fromApi(getProduct(products));
   }
 
   @override

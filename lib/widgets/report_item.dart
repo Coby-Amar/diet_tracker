@@ -12,11 +12,13 @@ class ReportItem extends StatelessWidget {
   final ApiReport report;
   final VoidCallback onView;
   final VoidCallback onEdit;
+  final VoidCallback onDelete;
   const ReportItem({
     super.key,
     required this.report,
     required this.onView,
     required this.onEdit,
+    required this.onDelete,
   });
 
   @override
@@ -26,6 +28,7 @@ class ReportItem extends StatelessWidget {
     return InkWell(
       onTap: onView,
       onDoubleTap: onEdit,
+      onLongPress: onDelete,
       child: Card(
         color: theme.cardColor,
         child: Column(

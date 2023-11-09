@@ -3,7 +3,7 @@ import 'package:diet_tracker/resources/formatters/date.dart';
 import 'package:diet_tracker/resources/formatters/numbers.dart';
 
 /// ----------------------------------------------------------------------------
-/// ApiUserDailyLimits
+/// class ApiDailyLimits extends ApiModel
 /// ----------------------------------------------------------------------------
 class ApiDailyLimits extends ApiModel {
   @override
@@ -20,7 +20,7 @@ class ApiDailyLimits extends ApiModel {
 }
 
 /// ----------------------------------------------------------------------------
-/// ApiUser
+/// class ApiUser extends ApiModel
 /// ----------------------------------------------------------------------------
 class ApiUser extends ApiModel {
   @override
@@ -40,7 +40,7 @@ class ApiUser extends ApiModel {
 }
 
 /// ----------------------------------------------------------------------------
-/// ApiProduct extends ApiModel
+/// class ApiProduct extends ApiModel implements AutoCompleteModel
 /// ----------------------------------------------------------------------------
 class ApiProduct extends ApiModel implements AutoCompleteModel {
   @override
@@ -67,7 +67,7 @@ class ApiProduct extends ApiModel implements AutoCompleteModel {
 }
 
 /// ----------------------------------------------------------------------------
-/// ApiEntry extends ApiModel
+/// class ApiEntry extends ApiModel
 /// ----------------------------------------------------------------------------
 class ApiEntry extends ApiModel {
   @override
@@ -89,7 +89,7 @@ class ApiEntry extends ApiModel {
 }
 
 /// ----------------------------------------------------------------------------
-/// ApiReport extends ApiModel
+/// class ApiReport extends ApiModel
 /// ----------------------------------------------------------------------------
 class ApiReport extends ApiModel {
   @override

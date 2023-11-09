@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 
 class AreYouSureDialog extends StatelessWidget {
-  const AreYouSureDialog({super.key});
+  final String title;
+  final String? content;
+  const AreYouSureDialog({
+    super.key,
+    this.title = "האם את/ה בטוח?",
+    this.content,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +15,20 @@ class AreYouSureDialog extends StatelessWidget {
     final navigator = Navigator.of(context);
     return AlertDialog(
       backgroundColor: theme.dialogBackgroundColor,
-      title: const Center(child: Text("האם את/ה בטוח?")),
+      title: Center(
+          child: Text(
+        title,
+        style: theme.textTheme.headlineMedium,
+      )),
+      content: content != null
+          ? Center(
+              heightFactor: 1,
+              child: Text(
+                content!,
+                style: theme.textTheme.titleMedium,
+              ),
+            )
+          : null,
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actions: [
         TextButton(

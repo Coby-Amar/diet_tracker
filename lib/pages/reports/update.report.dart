@@ -81,8 +81,7 @@ class UpdateReportPage extends StatelessWidget {
                         ...model.existingEntries.map(
                           (entry) => ReportEntryFormField(
                             initialValue: ReportEntryFormFieldState(
-                              products.firstWhere(
-                                  (product) => product.id == entry.productId),
+                              entry.getProduct(products),
                               entry.amount,
                             ),
                             onSaved: (entryData) {

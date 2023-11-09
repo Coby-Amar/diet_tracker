@@ -12,13 +12,27 @@ mixin Dialogs {
         builder: (context) => dialog,
       );
 
-  Future<bool> openAreYouSureDialog<bool>(BuildContext context) async {
+  Future<bool> openDeleteDialog(BuildContext context, {String? content}) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AreYouSureDialog(
+        title: "בטוח שרוצה למחוק?",
+        content: content,
+      ),
+    );
+    if (result == null) {
+      return false;
+    }
+    return result;
+  }
+
+  Future<bool> openAreYouSureDialog(BuildContext context) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => const AreYouSureDialog(),
     );
     if (result == null) {
-      return false as Future<bool>;
+      return false;
     }
     return result;
   }
