@@ -20,9 +20,13 @@ abstract class _ProductsStore with Store {
 
   @action
   Future<void> load() async {
-    final fetchedProducts = await _productsApi.getProducts();
-    if (fetchedProducts != null) {
-      products.addAll(fetchedProducts);
+    try {
+      final fetchedProducts = await _productsApi.getProducts();
+      if (fetchedProducts != null) {
+        products.addAll(fetchedProducts);
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -34,7 +38,7 @@ abstract class _ProductsStore with Store {
         products.add(createdProduct);
       }
     } catch (e) {
-      print("CreateProduct: $e");
+      print(e);
     }
   }
 
@@ -54,14 +58,17 @@ abstract class _ProductsStore with Store {
         }
       }
     } catch (e) {
-      print("update product: $e");
+      print(e);
     }
   }
 
   @action
   Future<void> delete(String productId) async {
-    if (await _productsApi.deleteProduct(productId)) {
+    try {
+      await _productsApi.deleteProduct(productId);
       products.removeWhere((element) => element.id == productId);
+    } catch (e) {
+      print(e);
     }
   }
 }

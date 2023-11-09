@@ -21,33 +21,47 @@ abstract class _InfoStore with Store {
 
   @action
   Future<void> getUser() async {
-    final result = await _authApi.user();
-    if (result != null) {
-      user = result;
+    try {
+      final result = await _authApi.user();
+      if (result != null) {
+        user = result;
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
   @action
   Future<void> register(Registration model) async {
-    final result = await _authApi.register(model);
-    if (result != null) {
-      user = result;
+    try {
+      final result = await _authApi.register(model);
+      if (result != null) {
+        user = result;
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
   @action
   Future<void> login(Login loginModel) async {
-    final result = await _authApi.login(loginModel);
-    if (result != null) {
-      user = result;
+    try {
+      final result = await _authApi.login(loginModel);
+      if (result != null) {
+        user = result;
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
   @action
   Future<void> logout() async {
-    final result = await _authApi.logout();
-    if (result) {
+    try {
+      await _authApi.logout();
       user = null;
+    } catch (e) {
+      print(e);
     }
   }
 }

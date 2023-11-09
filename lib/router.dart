@@ -18,7 +18,6 @@ import 'package:diet_tracker/resources/stores/info.dart';
 final goRouterConfig = GoRouter(
   navigatorKey: rootNavigationKey,
   initialLocation: "/login",
-  debugLogDiagnostics: true,
   routes: [
     GoRoute(
       name: "login",
@@ -79,7 +78,7 @@ final goRouterConfig = GoRouter(
                 parentNavigatorKey: rootNavigationKey,
                 name: "update_product",
                 path: "update",
-                builder: (context, state) => UpdateProductPage(),
+                builder: (context, state) => const UpdateProductPage(),
               ),
             ],
           ),
@@ -99,7 +98,7 @@ final goRouterConfig = GoRouter(
                 parentNavigatorKey: rootNavigationKey,
                 name: "update_report",
                 path: "update",
-                builder: (context, state) => UpdateReportPage(),
+                builder: (context, state) => const UpdateReportPage(),
               ),
             ],
           ),

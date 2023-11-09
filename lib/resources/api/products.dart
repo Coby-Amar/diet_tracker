@@ -30,12 +30,6 @@ class ProductsApi {
     return null;
   }
 
-  Future<bool> deleteProduct(String productId) async {
-    try {
-      await dioClient.delete("products/$productId");
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
+  Future<void> deleteProduct(String productId) async =>
+      dioClient.delete("products/$productId");
 }

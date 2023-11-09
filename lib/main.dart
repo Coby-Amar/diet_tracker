@@ -6,7 +6,6 @@ import 'package:window_manager/window_manager.dart';
 
 import 'package:diet_tracker/app.dart';
 import 'package:diet_tracker/resources/stores/info.dart';
-
 import 'package:diet_tracker/resources/stores/products.dart';
 import 'package:diet_tracker/resources/stores/reports.dart';
 
