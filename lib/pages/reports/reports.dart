@@ -1,8 +1,6 @@
 import 'package:diet_tracker/dialogs/view_report.dart';
 import 'package:diet_tracker/mixins/dialogs.dart';
 import 'package:diet_tracker/resources/formatters/date.dart';
-import 'package:diet_tracker/resources/models/display.dart';
-import 'package:diet_tracker/resources/states/delete.dart';
 import 'package:diet_tracker/resources/stores/reports.dart';
 import 'package:diet_tracker/widgets/appbar_themed.dart';
 import 'package:diet_tracker/widgets/floating_add_button.dart';
