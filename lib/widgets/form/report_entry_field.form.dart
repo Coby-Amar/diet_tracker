@@ -53,12 +53,14 @@ class ReportEntryFormField<T extends DisplayModel> extends StatelessWidget {
               productName: initialValue?.apiProduct?.name,
               hasError: hasError,
               onChangeAmount: (amount) {
-                field.value?.amount = amount;
-                field.didChange(field.value);
+                final newValue =
+                    ReportEntryFormFieldState(field.value?.apiProduct, amount);
+                field.didChange(newValue);
               },
               onChangeProduct: (product) {
-                field.value?.apiProduct = product;
-                field.didChange(field.value);
+                final newValue =
+                    ReportEntryFormFieldState(product, field.value?.amount);
+                field.didChange(newValue);
               },
             ),
             Visibility(

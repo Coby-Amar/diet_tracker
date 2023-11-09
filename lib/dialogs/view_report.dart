@@ -1,5 +1,7 @@
 import 'package:diet_tracker/resources/formatters/numbers.dart';
 import 'package:diet_tracker/resources/models/api.dart';
+import 'package:diet_tracker/resources/models/display.dart';
+import 'package:diet_tracker/resources/stores/products.dart';
 import 'package:diet_tracker/resources/stores/reports.dart';
 import 'package:diet_tracker/widgets/report_table.dart';
 import 'package:diet_tracker/widgets/table_cell_text.dart';
@@ -33,55 +35,66 @@ class ViewReportDialog extends StatelessWidget {
               ),
             ),
             FutureBuilder(
-              future: reportsStore.loadEntries(report.id),
+              future: reportsStore.loadEntries(report.id).then((entries) =>
+                  DisplayReportWithEntries.fromApi(report, entries ?? [])),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.data == null) {
-                    return const Text("no Data");
-                  }
-                  return Card(
-                    child: ReportTable(
-                      header: const [
-                        TableCellTextHeaderFooter(label: "כמות"),
-                        TableCellTextHeaderFooter(label: "פחממה"),
-                        TableCellTextHeaderFooter(label: "חלבון"),
-                        TableCellTextHeaderFooter(label: "שומן"),
-                      ],
-                      entries: snapshot.data!.map((entry) => TableRow(
-                            children: [
-                              TableCellText(label: entry.amount.toString()),
-                              TableCellText(
-                                label: NumbersFormmater.toFixed2(
-                                  entry.carbohydrates,
-                                ),
-                              ),
-                              TableCellText(
-                                label:
-                                    NumbersFormmater.toFixed2(entry.proteins),
-                              ),
-                              TableCellText(
-                                  label: NumbersFormmater.toFixed2(entry.fats)),
-                            ],
-                          )),
-                      footer: [
-                        const TableCellTextHeaderFooter(label: "סכום"),
-                        TableCellTextHeaderFooter(
-                          label: NumbersFormmater.toFixed2(
-                            report.carbohydratesTotal,
-                          ),
-                        ),
-                        TableCellTextHeaderFooter(
-                          label:
-                              NumbersFormmater.toFixed2(report.proteinsTotal),
-                        ),
-                        TableCellTextHeaderFooter(
-                          label: NumbersFormmater.toFixed2(report.fatsTotal),
-                        ),
-                      ],
-                    ),
-                  );
+                if (!snapshot.hasData) {
+                  return const CircularProgressIndicator();
                 }
-                return const CircularProgressIndicator();
+                final data = snapshot.data;
+                if (snapshot.data == null) {
+                  return const Text("no Data");
+                }
+                final existingEntries = data!.existingEntries;
+                final totalAmount = data.totalAmount;
+                final products = context.read<ProductsStore>().products;
+                return Card(
+                  child: ReportTable(
+                    columnWidths: const {2: FlexColumnWidth(1.5)},
+                    header: const [
+                      TableCellTextHeaderFooter(label: "שם"),
+                      TableCellTextHeaderFooter(label: "כמות"),
+                      TableCellTextHeaderFooter(label: "פחממה"),
+                      TableCellTextHeaderFooter(label: "חלבון"),
+                      TableCellTextHeaderFooter(label: "שומן"),
+                    ],
+                    entries: existingEntries.map((entry) => TableRow(
+                          children: [
+                            TableCellText(
+                              label: entry.getProduct(products).name,
+                            ),
+                            TableCellText(label: entry.amount.toString()),
+                            TableCellText(
+                              label: NumbersFormmater.toFixed2(
+                                entry.carbohydrates,
+                              ),
+                            ),
+                            TableCellText(
+                              label: NumbersFormmater.toFixed2(entry.proteins),
+                            ),
+                            TableCellText(
+                                label: NumbersFormmater.toFixed2(entry.fats)),
+                          ],
+                        )),
+                    footer: [
+                      const TableCellTextHeaderFooter(label: "סכום"),
+                      TableCellTextHeaderFooter(
+                        label: totalAmount.toString(),
+                      ),
+                      TableCellTextHeaderFooter(
+                        label: NumbersFormmater.toFixed2(
+                          report.carbohydratesTotal,
+                        ),
+                      ),
+                      TableCellTextHeaderFooter(
+                        label: NumbersFormmater.toFixed2(report.proteinsTotal),
+                      ),
+                      TableCellTextHeaderFooter(
+                        label: NumbersFormmater.toFixed2(report.fatsTotal),
+                      ),
+                    ],
+                  ),
+                );
               },
             )
           ],

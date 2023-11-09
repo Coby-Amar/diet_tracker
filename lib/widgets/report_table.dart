@@ -4,11 +4,13 @@ class ReportTable extends StatelessWidget {
   final List<Widget> header;
   final List<Widget> footer;
   final Iterable<TableRow> entries;
+  final Map<int, TableColumnWidth>? columnWidths;
   const ReportTable({
     super.key,
     required this.header,
     required this.footer,
     required this.entries,
+    this.columnWidths,
   });
 
   @override
@@ -17,7 +19,7 @@ class ReportTable extends StatelessWidget {
     return Container(
       color: theme.cardColor,
       child: Table(
-        columnWidths: const {1: FlexColumnWidth(1.5)},
+        columnWidths: columnWidths ?? const {1: FlexColumnWidth(1.5)},
         children: [
           TableRow(
             decoration: BoxDecoration(color: theme.primaryColorLight),

@@ -45,9 +45,17 @@ abstract class _ReportsStore with Store {
 
   @action
   Future<void> update(DisplayReportWithEntries reportWithEntries) async {
-    final createdReport = await _reportsApi.updateReport(reportWithEntries);
-    if (createdReport != null) {
-      reports.add(createdReport);
+    final updatedReport = await _reportsApi.updateReport(reportWithEntries);
+    if (updatedReport != null) {
+      final foundIndex =
+          reports.indexWhere((product) => product.id == updatedReport.id);
+      if (foundIndex > -1) {
+        reports.replaceRange(
+          foundIndex,
+          foundIndex + 1,
+          [updatedReport],
+        );
+      }
     }
   }
 

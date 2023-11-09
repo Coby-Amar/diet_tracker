@@ -43,6 +43,7 @@ class AppAutocomplete<T extends AutoCompleteModel> extends StatelessWidget {
                     focusNode: focusNode,
                     controller: textEditingController,
                     onSubmitted: (value) => onFieldSubmitted(),
+                    textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                       labelText: label,
                       errorText: errorText,

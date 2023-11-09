@@ -1,3 +1,4 @@
+import 'package:diet_tracker/resources/formatters/date.dart';
 import 'package:diet_tracker/resources/models/api.dart';
 import 'package:diet_tracker/resources/models/base.dart';
 
@@ -87,7 +88,9 @@ class DisplayDailyLimits extends DisplayModel<ApiDailyLimits> {
 /// ----------------------------------------------------------------------------
 /// class DisplayProductModel extends DisplayModel<ApiProduct>
 /// ----------------------------------------------------------------------------
-class DisplayProductModel extends DisplayModel<ApiProduct> {
+class DisplayProductModel extends DisplayModel<ApiProduct>
+    implements UpdateableModel {
+  @override
   String id = "";
   String? image = "";
   String name = "";
@@ -122,7 +125,9 @@ class DisplayProductModel extends DisplayModel<ApiProduct> {
 /// ----------------------------------------------------------------------------
 /// class DisplayEntry extends DisplayModel<ApiEntry>
 /// ----------------------------------------------------------------------------
-class DisplayEntry extends DisplayModel<ApiEntry> {
+class DisplayEntry extends DisplayModel<ApiEntry> implements UpdateableModel {
+  @override
+  String id = "";
   String productId = "";
   int amount = 0;
   double carbohydrates = 0;
@@ -130,15 +135,32 @@ class DisplayEntry extends DisplayModel<ApiEntry> {
   double fats = 0;
   DisplayEntry();
   DisplayEntry.fromApi(super.apiModel)
-      : productId = apiModel.productId,
+      : id = apiModel.id,
+        productId = apiModel.productId,
         amount = apiModel.amount,
         carbohydrates = apiModel.carbohydrates,
         proteins = apiModel.proteins,
         fats = apiModel.fats,
         super.fromApi();
 
+  DisplayEntry.from(ApiProduct product, int entryAmount) {
+    productId = product.id;
+    amount = entryAmount;
+    final calculatedAmount = entryAmount / product.amount;
+    carbohydrates = calculatedAmount * product.carbohydrate;
+    proteins = calculatedAmount * product.protein;
+    fats = calculatedAmount * product.fat;
+  }
+
+  DisplayProductModel getProduct(List<ApiProduct> products) {
+    final foundProduct =
+        products.firstWhere((element) => element.id == productId);
+    return DisplayProductModel.fromApi(foundProduct);
+  }
+
   @override
   Map<String, dynamic> toMap() => {
+        "id": id,
         "productId": productId,
         "amount": amount,
         "carbohydrates": carbohydrates,
@@ -150,7 +172,10 @@ class DisplayEntry extends DisplayModel<ApiEntry> {
 /// ----------------------------------------------------------------------------
 /// class DisplayReportModel extends DisplayModel<ApiReport>
 /// ----------------------------------------------------------------------------
-class DisplayReportModel extends DisplayModel<ApiReport> {
+class DisplayReportModel extends DisplayModel<ApiReport>
+    implements UpdateableModel {
+  @override
+  String id = "";
   DateTime date = DateTime(0000);
   double carbohydratesTotal = 0;
   double proteinsTotal = 0;
@@ -158,7 +183,8 @@ class DisplayReportModel extends DisplayModel<ApiReport> {
 
   DisplayReportModel();
   DisplayReportModel.fromApi(super.apiModel)
-      : date = apiModel.date,
+      : id = apiModel.id,
+        date = apiModel.date,
         carbohydratesTotal = apiModel.carbohydratesTotal,
         proteinsTotal = apiModel.proteinsTotal,
         fatsTotal = apiModel.fatsTotal,
@@ -166,7 +192,8 @@ class DisplayReportModel extends DisplayModel<ApiReport> {
 
   @override
   Map<String, Object?> toMap() => {
-        "date": date,
+        "id": id,
+        "date": DateFormmater.toYearMonthDay(date),
         "carbohydratesTotal": carbohydratesTotal,
         "proteinsTotal": proteinsTotal,
         "fatsTotal": fatsTotal,
@@ -178,15 +205,45 @@ class DisplayReportModel extends DisplayModel<ApiReport> {
 /// ----------------------------------------------------------------------------
 class DisplayReportWithEntries {
   DisplayReportModel report = DisplayReportModel();
-  List<DisplayEntry> entries = [];
+  List<DisplayEntry> existingEntries = [];
+  List<DisplayEntry> entriesToCreate = [];
 
   DisplayReportWithEntries();
   DisplayReportWithEntries.fromApi(ApiReport report, List<ApiEntry> entries)
       : report = DisplayReportModel.fromApi(report),
-        entries = entries.map((e) => DisplayEntry.fromApi(e)).toList();
+        existingEntries = entries.map((e) => DisplayEntry.fromApi(e)).toList();
+
+  int get totalAmount {
+    int amount = 0;
+    for (final entry in existingEntries) {
+      amount += entry.amount;
+    }
+    return amount;
+  }
+
+  calculateReportTotals({bool shouldResetTotals = false}) {
+    if (shouldResetTotals) {
+      report.carbohydratesTotal = 0;
+      report.proteinsTotal = 0;
+      report.fatsTotal = 0;
+    }
+    for (final entry in existingEntries) {
+      report.carbohydratesTotal += entry.carbohydrates;
+      report.proteinsTotal += entry.proteins;
+      report.fatsTotal += entry.fats;
+    }
+    for (final entry in entriesToCreate) {
+      report.carbohydratesTotal += entry.carbohydrates;
+      report.proteinsTotal += entry.proteins;
+      report.fatsTotal += entry.fats;
+    }
+  }
 
   Map<String, Object?> toMap() => {
         "report": report.toMap(),
-        "entries": entries.map((entry) => entry.toMap()).toList(),
+        "existingEntries":
+            existingEntries.map((entry) => entry.toMap()).toList(),
+        "entriesToCreate":
+            entriesToCreate.map((entry) => entry.toMap()).toList(),
       };
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:diet_tracker/dialogs/dialog_scaffold_form.dart';
 import 'package:diet_tracker/resources/models/display.dart';
 import 'package:diet_tracker/resources/stores/products.dart';
+import 'package:diet_tracker/widgets/form/report_entry_field.form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:image_picker/image_picker.dart';

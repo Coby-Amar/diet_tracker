@@ -37,7 +37,8 @@ class ReportsApi {
     DisplayReportWithEntries reportWithEntries,
   ) async {
     try {
-      final response = await dioClient.post("reports", data: reportWithEntries);
+      final response =
+          await dioClient.post("reports", data: reportWithEntries.toMap());
       final data = response.data;
       if (data is Map<String, dynamic>) {
         return ApiReport.fromMap(data);
@@ -52,11 +53,16 @@ class ReportsApi {
   Future<ApiReport?> updateReport(
     DisplayReportWithEntries reportWithEntries,
   ) async {
-    final response = await dioClient.put("reports", data: reportWithEntries);
-    if (response.data) {
-      return ApiReport.fromMap(response.data);
+    try {
+      final response =
+          await dioClient.put("reports", data: reportWithEntries.toMap());
+      if (response.data) {
+        return ApiReport.fromMap(response.data);
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
-    return null;
   }
 
   Future<bool> deleteReport(String reportId) async {

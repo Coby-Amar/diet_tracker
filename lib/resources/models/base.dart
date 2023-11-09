@@ -21,3 +21,10 @@ abstract class DisplayModel<T extends ApiModel> {
   const DisplayModel.fromApi(T apiModel);
   Map<String, Object?> toMap();
 }
+
+/// ----------------------------------------------------------------------------
+/// abstract class DisplayModel<T extends ApiModel>
+/// ----------------------------------------------------------------------------
+abstract class UpdateableModel {
+  abstract String id;
+}

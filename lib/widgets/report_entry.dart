@@ -11,7 +11,7 @@ class ReportEntry extends StatelessWidget {
   final String? productName;
   final int? amount;
   final bool hasError;
-  ReportEntry({
+  const ReportEntry({
     super.key,
     required this.onChangeProduct,
     required this.onChangeAmount,
@@ -19,8 +19,6 @@ class ReportEntry extends StatelessWidget {
     this.amount,
     this.hasError = false,
   });
-
-  final controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +41,10 @@ class ReportEntry extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: TextField(
-            controller: controller..text = amount.toString(),
+          child: TextFormField(
+            initialValue: amount?.toString(),
             keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.next,
             decoration: InputDecoration(
               labelText: 'כמות',
               errorStyle: const TextStyle(height: 0),

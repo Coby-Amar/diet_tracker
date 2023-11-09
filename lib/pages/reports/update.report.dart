@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -7,35 +9,35 @@ import 'package:diet_tracker/resources/models/api.dart';
 import 'package:diet_tracker/resources/models/display.dart';
 import 'package:diet_tracker/resources/stores/products.dart';
 import 'package:diet_tracker/resources/stores/reports.dart';
-import 'package:diet_tracker/widgets/date_picker_form_field.dart';
+import 'package:diet_tracker/widgets/form/date_picker_form_field.dart';
 import 'package:diet_tracker/widgets/form/report_entry_field.form.dart';
 
 class UpdateReportPage extends StatelessWidget {
-  final List<DisplayEntry> entriesToCreate = [];
-  UpdateReportPage({super.key});
+  const UpdateReportPage({super.key});
 
-  // Future<bool> onFormSuccess(
-  //   BuildContext? context,
-  // ) async {
-  //   final report = _model.report;
-  //   for (final entry in _model.entries) {
-  //     report.carbohydratesTotal += entry.carbohydrates;
-  //     report.proteinsTotal += entry.proteins;
-  //     report.fatsTotal += entry.fats;
-  //   }
-  //   if (context != null) {
-  //     final reportsStore = context.read<ReportsStore>();
-  //     await reportsStore.create(_model);
-  //   }
-  //   return true;
-  // }
-
-  onCreateEntrySaved(DisplayReportWithEntries model, int index) =>
-      (ReportEntryFormFieldState? entry) {
-        if (entry == null) return null;
-        model.entries[index].amount = entry.amount!;
-        model.entries[index].productId = entry.apiProduct!.id;
+  _onFormSuccess(DisplayReportWithEntries model, ReportsStore reportStore) =>
+      (BuildContext? context) async {
+        model.calculateReportTotals(shouldResetTotals: true);
+        await reportStore.update(model);
+        return true;
       };
+
+  List<ReportEntryFormField> _createNewEntries(
+    DisplayReportWithEntries model,
+  ) =>
+      List.filled(
+        15 - model.existingEntries.length,
+        ReportEntryFormField(
+          onSaved: (entryData) {
+            if (entryData == null) return;
+            final entry = DisplayEntry.from(
+              entryData.apiProduct!,
+              entryData.amount!,
+            );
+            model.entriesToCreate.add(entry);
+          },
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -56,63 +58,52 @@ class UpdateReportPage extends StatelessWidget {
           return ScaffoldForm(
             title: "עדכון דוח",
             formSubmitText: "עדכן",
-            onSuccess: (_) async {
-              print(model);
-              // await reportStore.update(model);
-              return true;
-            },
+            onSuccess: _onFormSuccess(model, reportStore),
             formBuilder: (theme, validations) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DatePicketFormField(
                   label: 'date',
+                  initialValue: model.report.date,
                   onSaved: (date) => model.report.date = date!,
                 ),
-                ...model.entries.map(
-                  (entry) => ReportEntryFormField(
-                    initialValue: ReportEntryFormFieldState(
-                      products.firstWhere(
-                          (product) => product.id == entry.productId),
-                      entry.amount,
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Text(
+                            "פריטים קימים",
+                            style: theme.textTheme.titleMedium,
+                          ),
+                        ),
+                        ...model.existingEntries.map(
+                          (entry) => ReportEntryFormField(
+                            initialValue: ReportEntryFormFieldState(
+                              products.firstWhere(
+                                  (product) => product.id == entry.productId),
+                              entry.amount,
+                            ),
+                            onSaved: (entryData) {
+                              if (entryData == null) return;
+                              entry.productId = entryData.apiProduct!.id;
+                              entry.amount = entryData.amount!;
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: Text(
+                            "פריטים חדשים",
+                            style: theme.textTheme.titleMedium,
+                          ),
+                        ),
+                        ..._createNewEntries(model),
+                      ],
                     ),
-                    onSaved: (entryData) {
-                      if (entryData == null) return;
-                      entry.productId = entryData.apiProduct!.id;
-                      entry.amount = entryData.amount!;
-                    },
                   ),
                 ),
-                TextButton(
-                  child: const Text("הוספת פריט"),
-                  onPressed: () {
-                    entriesToCreate.add(DisplayEntry());
-                  },
-                ),
-                ...entriesToCreate.map(
-                  (entry) => ReportEntryFormField(
-                    onSaved: (entryData) {
-                      if (entryData == null) return;
-                      entry.productId = entryData.apiProduct!.id;
-                      entry.amount = entryData.amount!;
-                    },
-                  ),
-                ),
-                // Expanded(
-                //   child: Builder(builder: (context) {
-                //     return ListView.builder(
-                //       padding: const EdgeInsets.only(bottom: 10),
-                //       itemCount: model.entries.length,
-                //       itemBuilder: (context, index) => ReportEntryFormField(
-                //         initialValue: ReportEntryFormFieldState(
-                //           products.firstWhere((element) =>
-                //               element.id == model.entries[index].productId),
-                //           model.entries[index].amount,
-                //         ),
-                //         onSaved: onCreateEntrySaved(model, index),
-                //       ),
-                //     );
-                //   }),
-                // ),
               ],
             ),
           );

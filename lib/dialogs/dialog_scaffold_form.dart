@@ -29,7 +29,10 @@ class ScaffoldForm<T> extends StatelessWidget with Dialogs {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(
+          title,
+          style: theme.textTheme.headlineLarge,
+        ),
         centerTitle: true,
       ),
       body: Form(
