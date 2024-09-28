@@ -1,103 +1,88 @@
-import 'dart:io';
-
-import 'package:diet_tracker/dialogs/dialog_scaffold_form.dart';
-import 'package:diet_tracker/resources/models/display.dart';
-import 'package:diet_tracker/resources/stores/products.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-class CreateProductPage extends StatelessWidget {
-  final _model = DisplayProductModel();
-  final _picker = ImagePicker();
-  CreateProductPage({super.key});
+import 'package:diet_tracker/resources/provider.dart';
+import 'package:diet_tracker/widgets/form/imagepicker.form.dart';
+import 'package:diet_tracker/widgets/form/scaffold.form.dart';
+import 'package:diet_tracker/resources/models.dart';
 
-  Future<bool> onFormSuccess(
-    BuildContext? context,
-  ) async {
-    if (context != null) {
-      final productsStore = context.read<ProductsStore>();
-      await productsStore.create(_model);
-    }
-    return true;
-  }
+class CreateProductPage extends StatelessWidget {
+  const CreateProductPage({super.key});
 
   @override
   Widget build(BuildContext context) => ScaffoldForm(
-        title: "יצירת דוח",
-        formSubmitText: "צור",
-        onSuccess: onFormSuccess,
-        formBuilder: (theme, validations) => Column(
+        model: Product(),
+        title: "Add Product",
+        onSuccess: (model) => context.read<AppProvider>().addProduct(model),
+        formBuilder: (theme, validations, model, setState) => Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      final XFile? pickedFile =
-                          await _picker.pickImage(source: ImageSource.gallery);
-                      if (pickedFile != null) {
-                        _model.image = pickedFile.path;
-                      }
-                    },
-                    child: const Text('בחר תמונה'),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Visibility(
-                    visible: _model.image?.isNotEmpty ?? false,
-                    child: Image.file(File(_model.image ?? '')),
-                  ),
-                ),
-              ],
+            ImageFormField(
+              label: 'Select Image',
+              onSaved: (image) => model.image = image,
             ),
             TextFormField(
-              decoration: const InputDecoration(labelText: 'שם'),
-              validator: validations.required,
-              onSaved: (newValue) => _model.name = newValue!.trim(),
+              keyboardType: TextInputType.name,
+              validator: validations.isRequired,
+              textInputAction: TextInputAction.next,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              decoration: const InputDecoration(labelText: 'Name'),
+              onSaved: (newValue) => model.name = newValue!.trim(),
             ),
             TextFormField(
-              decoration: const InputDecoration(labelText: 'כמות'),
               keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              decoration: const InputDecoration(labelText: 'Quantity'),
               validator: validations.compose([
-                validations.required,
-                validations.numberOnly,
+                validations.isRequired,
+                validations.doubleOnly,
               ]),
               onSaved: (newValue) =>
-                  _model.amount = int.tryParse(newValue!.trim()) ?? 0,
+                  model.quantity = double.tryParse(newValue!.trim()) ?? 0,
             ),
             TextFormField(
-              decoration: const InputDecoration(labelText: 'פחממה'),
-              keyboardType: TextInputType.number,
-              validator: validations.compose([
-                validations.required,
-                validations.numberOnly,
-              ]),
-              onSaved: (newValue) =>
-                  _model.carbohydrate = int.tryParse(newValue!.trim()) ?? 0,
+              textInputAction: TextInputAction.next,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              decoration: const InputDecoration(labelText: 'Unit'),
+              validator: validations.isRequired,
+              onSaved: (newValue) => model.units = newValue!.trim(),
             ),
             TextFormField(
-              decoration: const InputDecoration(labelText: 'חלבון'),
               keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              decoration: const InputDecoration(labelText: 'Carbohydrate'),
               validator: validations.compose([
-                validations.required,
-                validations.numberOnly,
+                validations.isRequired,
+                validations.doubleOnly,
               ]),
               onSaved: (newValue) =>
-                  _model.protein = int.parse(newValue!.trim()),
+                  model.carbohydrates = double.tryParse(newValue!.trim()) ?? 0,
             ),
             TextFormField(
-              decoration: const InputDecoration(labelText: 'שומן'),
               keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              decoration: const InputDecoration(labelText: 'Protein'),
               validator: validations.compose([
-                validations.required,
-                validations.numberOnly,
+                validations.isRequired,
+                validations.doubleOnly,
               ]),
               onSaved: (newValue) =>
-                  _model.fat = int.tryParse(newValue!.trim()) ?? 0,
+                  model.proteins = double.parse(newValue!.trim()),
+            ),
+            TextFormField(
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.done,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              decoration: const InputDecoration(labelText: 'Fat'),
+              validator: validations.compose([
+                validations.isRequired,
+                validations.doubleOnly,
+              ]),
+              onSaved: (newValue) =>
+                  model.fats = double.tryParse(newValue!.trim()) ?? 0,
             ),
           ],
         ),

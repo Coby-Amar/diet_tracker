@@ -1,74 +1,49 @@
-import 'dart:io';
-
-import 'package:diet_tracker/resources/models/api.dart';
-import 'package:diet_tracker/widgets/slideable_page_item.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:diet_tracker/resources/extensions/files.extention.dart';
+import 'package:diet_tracker/resources/extensions/numbers.extension.dart';
+import 'package:diet_tracker/resources/models.dart';
 
 class ProductItem extends StatelessWidget {
-  final ApiProduct product;
+  final Product product;
   final VoidCallback onEdit;
-  final VoidCallback onDelete;
+
   const ProductItem({
     super.key,
     required this.product,
     required this.onEdit,
-    required this.onDelete,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SlidablePageItem(
-      onEdit: onEdit,
-      onDelete: onDelete,
-      child: Container(
-        color: theme.cardColor,
-        width: Size.infinite.width,
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          mainAxisSize: MainAxisSize.min,
+  Widget build(BuildContext context) => ListTile(
+        onTap: onEdit,
+        leading: product.image != null
+            ? InkWell(
+                onTap: () => context.pushNamed(
+                  'fullscreen_image',
+                  extra: product.image,
+                ),
+                child: product.image.widgetOrNull,
+              )
+            : null,
+        title: Text(product.name),
+        subtitle: Text('${product.quantity.toDisplay} ${product.units}'),
+        isThreeLine: true,
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            product.image != null
-                ? Image.file(
-                    File(product.image ?? ''),
-                    fit: BoxFit.contain,
-                    height: 50,
-                  )
-                : null,
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  product.name,
-                  style: theme.textTheme.headlineLarge,
-                ),
-                Text(
-                  'כמות: ${product.amount}',
-                  style: theme.textTheme.titleLarge,
-                ),
-              ],
+            Text(
+              'Fat: ${product.fats.toDisplay}',
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  'פחמהמה: ${product.carbohydrate}',
-                  style: theme.textTheme.bodyLarge,
-                ),
-                Text(
-                  'חלבון: ${product.protein}',
-                  style: theme.textTheme.bodyLarge,
-                ),
-                Text(
-                  'שומן: ${product.fat}',
-                  style: theme.textTheme.bodyLarge,
-                ),
-              ],
+            Text(
+              'Protein: ${product.proteins.toDisplay}',
             ),
-          ].whereType<Widget>().toList(),
+            Text(
+              'Carbohydrate: ${product.carbohydrates.toDisplay}',
+            ),
+          ],
         ),
-      ),
-    );
-  }
+      );
 }

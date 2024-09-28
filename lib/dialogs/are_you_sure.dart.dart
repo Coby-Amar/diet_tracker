@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AreYouSureDialog extends StatelessWidget {
   final String title;
   final String? content;
   const AreYouSureDialog({
     super.key,
-    this.title = "האם את/ה בטוח?",
+    this.title = "Are you sure?",
     this.content,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final navigator = Navigator.of(context);
     return AlertDialog(
       backgroundColor: theme.dialogBackgroundColor,
       title: Center(
@@ -32,16 +32,16 @@ class AreYouSureDialog extends StatelessWidget {
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actions: [
         TextButton(
-          onPressed: () => navigator.pop(true),
+          onPressed: () => context.pop(true),
           child: Text(
-            "כן",
+            "Yes",
             style: TextStyle(color: theme.colorScheme.error),
           ),
         ),
         TextButton(
-          onPressed: () => navigator.pop(false),
+          onPressed: () => context.pop(false),
           child: Text(
-            "לא",
+            "No",
             style: TextStyle(color: theme.primaryColorDark),
           ),
         )

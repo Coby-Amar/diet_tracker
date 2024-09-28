@@ -15,10 +15,10 @@ class _HomePageState extends State<HomePage> {
   _onDestinationSelected(int index) {
     switch (index) {
       case 0:
-        context.goNamed("products");
+        context.goNamed("reports");
         break;
       case 1:
-        context.goNamed("reports");
+        context.goNamed("products");
     }
     setState(() {
       currentPageIndex = index;
@@ -36,13 +36,13 @@ class _HomePageState extends State<HomePage> {
         selectedIndex: currentPageIndex,
         destinations: const <Widget>[
           NavigationDestination(
-            icon: Icon(Icons.storage),
-            label: 'מוצרים',
-          ),
-          NavigationDestination(
             selectedIcon: Icon(Icons.summarize_outlined),
             icon: Icon(Icons.summarize_outlined),
-            label: 'דוחות',
+            label: 'Reports',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.storage),
+            label: 'Products',
           ),
         ],
       ),

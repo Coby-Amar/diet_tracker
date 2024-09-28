@@ -19,9 +19,11 @@ class Validations {
         return null;
       };
 
-  String? required(String? value) =>
-      value?.isEmpty ?? true ? 'שדה זה חייב להיות מלא' : null;
+  String? isRequired(String? value) =>
+      value?.isEmpty ?? true ? 'Field is required' : null;
 
-  String? numberOnly(String? value) =>
-      int.tryParse(value!) == null ? 'שדה זה יכל להכיל רק מספרים' : null;
+  String? doubleOnly(String? value) =>
+      double.tryParse(value!) == null ? 'Numbers only field' : null;
+  String? intOnly(String? value) =>
+      int.tryParse(value!) == null ? 'Numbers only field' : null;
 }

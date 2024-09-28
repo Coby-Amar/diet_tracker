@@ -4,6 +4,10 @@ final colorScheme = ColorScheme.fromSeed(seedColor: Colors.blueGrey);
 
 final theme = ThemeData(
   colorScheme: colorScheme,
+  pageTransitionsTheme: const PageTransitionsTheme(builders: {
+    TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+    TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+  }),
   textTheme: Typography.blackRedwoodCity.copyWith(
     headlineLarge: const TextStyle(
       fontSize: 24,

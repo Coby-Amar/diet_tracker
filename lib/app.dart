@@ -1,6 +1,4 @@
-import 'package:diet_tracker/mouse_events.dart';
 import 'package:diet_tracker/router.dart';
-import 'package:diet_tracker/shortcuts_actions.dart';
 import 'package:diet_tracker/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +12,7 @@ class Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp.router(
+        debugShowCheckedModeBanner: false,
         routerConfig: goRouterConfig,
         theme: theme,
         builder: (context, child) {
@@ -22,17 +21,7 @@ class Application extends StatelessWidget {
               Exception("Oops something went wrong should not be here"),
             );
           }
-          return Listener(
-            onPointerDown: onPointerDown,
-            child: FocusableActionDetector(
-              shortcuts: ShortcutsAndActions.backShortcuts,
-              actions: ShortcutsAndActions.backShortcutsActions,
-              child: Directionality(
-                textDirection: TextDirection.rtl,
-                child: child,
-              ),
-            ),
-          );
+          return child;
         },
       );
 }

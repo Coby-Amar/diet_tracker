@@ -1,43 +1,51 @@
-import 'package:diet_tracker/mixins/dialogs.dart';
-import 'package:diet_tracker/resources/models/display.dart';
-import 'package:diet_tracker/resources/stores/products.dart';
-import 'package:diet_tracker/widgets/appbar_themed.dart';
-import 'package:diet_tracker/widgets/floating_add_button.dart';
 import 'package:flutter/material.dart';
-
-import 'package:diet_tracker/widgets/product_item.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class ProductsPage extends StatelessWidget with Dialogs {
+import 'package:diet_tracker/resources/provider.dart';
+import 'package:diet_tracker/widgets/product_item.dart';
+import 'package:diet_tracker/widgets/appbar_themed.dart';
+import 'package:diet_tracker/widgets/floating_add_button.dart';
+
+class ProductsPage extends StatelessWidget {
   const ProductsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final productsStore = context.read<ProductsStore>();
-    final products = productsStore.products;
+    final appProvider = context.read<AppProvider>();
+    final products = context.watch<AppProvider>().searchProductsFiltered;
     return Scaffold(
-      appBar: const AppBarThemed(
-        title: 'מוצרים',
-        showActions: true,
-      ),
-      body: Observer(
-        builder: (_) => ListView.separated(
-          itemCount: products.length,
-          separatorBuilder: (context, index) => const Divider(),
-          itemBuilder: (context, index) => ProductItem(
-            product: products[index],
-            onEdit: () => context.goNamed(
-              "update_product",
-              extra: DisplayProductModel.fromApi(products[index]),
+      appBar: const AppBarThemed(title: 'Products'),
+      body: RefreshIndicator(
+        onRefresh: appProvider.loadProducts,
+        child: Column(
+          children: [
+            SearchBar(
+              hintText: 'Search by name',
+              keyboardType: TextInputType.name,
+              leading: const Icon(Icons.search),
+              shape: const MaterialStatePropertyAll(RoundedRectangleBorder()),
+              elevation: const MaterialStatePropertyAll(10),
+              onChanged: (value) => appProvider.searchProductsQuery = value,
             ),
-            onDelete: () => productsStore.delete(products[index].id),
-          ),
+            Expanded(
+              child: ListView.separated(
+                itemCount: products.length,
+                separatorBuilder: (context, index) => const Divider(),
+                itemBuilder: (context, index) => ProductItem(
+                  product: products[index],
+                  onEdit: () => context.pushNamed(
+                    "update_product",
+                    extra: products[index],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingAddButton(
-        onPressed: () => context.goNamed("create_product"),
+        onPressed: () => context.pushNamed("create_product"),
       ),
     );
   }

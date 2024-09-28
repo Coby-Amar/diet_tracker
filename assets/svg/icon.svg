@@ -1,0 +1,12 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 25 C 0 0, 100 0, 100 25 Z" fill="#FF8732" />
+    <path d="M0 75 C 0 100, 100 100, 100 75 Z" fill="#FF8732" />
+    <rect y="50" width="100" height="25" fill="brown" stroke-linejoin="round" stroke="brown" />
+    <rect y="40" width="100" height="10" fill="green" stroke-linejoin="round" stroke="green" />
+    <rect y="30" width="100" height="10" fill="purple" stroke-linejoin="round" stroke="purple" />
+    <rect y="25" width="100" height="5" fill="red" stroke-linejoin="round" stroke="red" />
+    <line x1="20" x2="80" y1="20" y2="80" fill="transparent" stroke="white" stroke-width="2" />
+    <line x1="20" x2="80" y1="20" y2="80" stroke="red" />
+    <circle cx="50" cy="50" r="42" fill="transparent" stroke="white" stroke-width="2" />
+    <circle cx="50" cy="50" r="42" fill="transparent" stroke="red" />
+</svg>
