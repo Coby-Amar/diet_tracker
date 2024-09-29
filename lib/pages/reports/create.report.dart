@@ -31,14 +31,12 @@ class CreateReportPage extends StatelessWidget {
           Text('Total Proteins: ${reportModel.totalProteins.toDisplay}'),
           Text(
               'Total Carbohydrates: ${reportModel.totalCarbohydrates.toDisplay}'),
-          ...reportModel.entries
-              .map(
-                (e) => DisplayReportEntry(
-                  reportEntry: e,
-                  onDelete: () => setState(() => reportModel.removeEntry(e)),
-                ),
-              )
-              .toList(),
+          ...reportModel.entries.map(
+            (e) => DisplayReportEntry(
+              reportEntry: e,
+              onDelete: () => setState(() => reportModel.removeEntry(e)),
+            ),
+          ),
           FormField(
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (value) {
@@ -126,7 +124,7 @@ class DisplayReportEntry extends StatelessWidget {
     return ListTile(
       leading: product.imageFileOrNull,
       title: Text(product.name),
-      subtitle: Text('${reportEntry.quantity} ${product.units}'),
+      subtitle: Text('${reportEntry.quantity.toDisplay} ${product.units}'),
       trailing: IconButton.filledTonal(
         onPressed: onDelete,
         icon: const Icon(Icons.remove),

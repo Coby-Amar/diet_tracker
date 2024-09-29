@@ -24,8 +24,8 @@ class ProductsPage extends StatelessWidget {
               hintText: 'Search by name',
               keyboardType: TextInputType.name,
               leading: const Icon(Icons.search),
-              shape: const MaterialStatePropertyAll(RoundedRectangleBorder()),
-              elevation: const MaterialStatePropertyAll(10),
+              shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
+              elevation: const WidgetStatePropertyAll(10),
               onChanged: (value) => appProvider.searchProductsQuery = value,
             ),
             Expanded(

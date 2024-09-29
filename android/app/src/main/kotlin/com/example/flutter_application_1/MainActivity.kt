@@ -1,4 +1,4 @@
-package com.example.diet_tracker
+package com.diet_tracker
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -31,7 +31,7 @@ class ProductItem extends StatelessWidget {
         subtitle: Text('${product.quantity.toDisplay} ${product.units}'),
         isThreeLine: true,
         trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(

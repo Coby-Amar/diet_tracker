@@ -1,11 +1,9 @@
-import 'package:diet_tracker/dialogs/are_you_sure.dart.dart';
-import 'package:diet_tracker/resources/extensions/strings.extension.dart';
-import 'package:diet_tracker/widgets/report_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'package:diet_tracker/dialogs/are_you_sure.dart.dart';
+import 'package:diet_tracker/widgets/report_item.dart';
 import 'package:diet_tracker/resources/provider.dart';
 import 'package:diet_tracker/widgets/appbar_themed.dart';
 import 'package:diet_tracker/widgets/floating_add_button.dart';
@@ -27,8 +25,8 @@ class ReportsPage extends StatelessWidget {
               hintText: 'Search by date',
               keyboardType: TextInputType.datetime,
               leading: const Icon(Icons.search),
-              shape: const MaterialStatePropertyAll(RoundedRectangleBorder()),
-              elevation: const MaterialStatePropertyAll(10),
+              shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
+              elevation: const WidgetStatePropertyAll(10),
               onChanged: (value) => appProvider.searchReportsQuery = value,
             ),
             Expanded(

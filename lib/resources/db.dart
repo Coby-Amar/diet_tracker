@@ -7,17 +7,13 @@ import 'package:path_provider/path_provider.dart';
 
 Future<String> get _getLocalPath async {
   final dir = await getApplicationDocumentsDirectory();
-  final appDir = Directory('${dir.path}${separator}diet_tracker');
-  if (!appDir.existsSync()) {
-    appDir.create();
-  }
-  return appDir.path;
+  return dir.path;
 }
 
 Future<String> get _getImagePath async {
   final imageDir = Directory('${await _getLocalPath}${separator}images');
   if (!imageDir.existsSync()) {
-    imageDir.create();
+    imageDir.createSync();
   }
   return imageDir.path;
 }

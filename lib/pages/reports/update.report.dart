@@ -35,14 +35,12 @@ class UpdateReportPage extends StatelessWidget {
           Text('Total Proteins: ${reportModel.totalProteins.toDisplay}'),
           Text(
               'Total Carbohydrates: ${reportModel.totalCarbohydrates.toDisplay}'),
-          ...reportModel.entries
-              .map(
-                (e) => DisplayReportEntry(
-                  reportEntry: e,
-                  onDelete: () => setState(() => reportModel.removeEntry(e)),
-                ),
-              )
-              .toList(),
+          ...reportModel.entries.map(
+            (e) => DisplayReportEntry(
+              reportEntry: e,
+              onDelete: () => setState(() => reportModel.removeEntry(e)),
+            ),
+          ),
           FormField(
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (value) {
