@@ -1,159 +1,201 @@
-import 'dart:convert';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-const uuid = Uuid();
+part 'models.g.dart';
 
-abstract class JsonObject {
-  JsonObject.fromJson(Map<String, dynamic> map);
-  String toJson();
+abstract class BaseModel {
+  late int id;
 }
 
-extension ProductImage on Product {
-  Widget? get imageFileOrNull {
-    if (image != null) {
-      return Image.file(image!);
-    }
-    return null;
+enum ImageType {
+  @JsonValue("none")
+  none,
+  @JsonValue("file")
+  file,
+  @JsonValue("asset")
+  asset,
+}
+
+enum Units {
+  @JsonValue("none")
+  none,
+  @JsonValue("grams")
+  grams,
+  @JsonValue("kilograms")
+  kilograms,
+  @JsonValue("pounds")
+  pounds,
+  @JsonValue("serving")
+  serving,
+}
+
+class Uint8ListConverter implements JsonConverter<Uint8List?, List<int>?> {
+  const Uint8ListConverter();
+
+  @override
+  Uint8List? fromJson(List<int>? json) {
+    if (json == null) return null;
+
+    return Uint8List.fromList(json);
+  }
+
+  @override
+  List<int>? toJson(Uint8List? object) {
+    if (object == null) return null;
+
+    return object.toList();
   }
 }
 
-class Product extends JsonObject {
-  final String id;
-  File? image;
+@JsonSerializable(explicitToJson: true)
+class Product implements BaseModel {
+  @override
+  int id;
+  @Uint8ListConverter()
+  Uint8List? image;
   String name;
-  String units;
+  Units units;
   double quantity;
   double carbohydrates;
   double proteins;
   double fats;
+  bool cooked;
 
   Product({
-    id,
+    this.id = -1,
     this.image,
     this.name = '',
-    this.units = '',
-    this.quantity = 0,
-    this.carbohydrates = 0,
-    this.proteins = 0,
-    this.fats = 0,
-  })  : id = id ?? uuid.v4(),
-        super.fromJson({});
+    this.units = Units.none,
+    this.quantity = -1,
+    this.carbohydrates = -1,
+    this.proteins = -1,
+    this.fats = -1,
+    this.cooked = false,
+  });
 
-  Product.fromJson(super.map)
-      : id = map['id'],
-        image = map['image'] != null ? File(map['image']) : map['image'],
-        name = map['name'],
-        units = map['units'],
-        quantity = map['quantity'],
-        carbohydrates = map['carbohydrates'],
-        proteins = map['proteins'],
-        fats = map['fats'],
-        super.fromJson();
+  factory Product.fromJson(Map<String, Object?> json) =>
+      _$ProductFromJson(json);
 
-  @override
-  String toJson() => jsonEncode({
-        'id': id,
-        'image': image?.path,
-        'name': name,
-        'units': units,
-        'quantity': quantity,
-        'carbohydrates': carbohydrates,
-        'proteins': proteins,
-        'fats': fats,
-      });
+  Map<String, Object?> toJson() {
+    return _$ProductToJson(this);
+  }
 }
 
-class ReportEntry extends JsonObject {
-  final String id;
-  String productId;
+extension ProductImage on Product {
+  Widget get imageOrDefault {
+    if (image?.isNotEmpty ?? false) {
+      return Image.memory(
+        image!,
+        width: 100,
+        height: 100,
+      );
+    }
+    return const Image(image: AssetImage('assets/icon/icon.png'));
+  }
+}
+
+@JsonSerializable()
+class ReportEntry implements BaseModel {
+  @override
+  int id;
+  int productId;
   double quantity;
   double carbohydrates;
   double proteins;
   double fats;
 
   ReportEntry({
-    id,
-    this.productId = '',
+    this.id = -1,
+    this.productId = -1,
     this.quantity = 0,
     this.carbohydrates = 0,
     this.proteins = 0,
     this.fats = 0,
-  })  : id = id ?? uuid.v4(),
-        super.fromJson({});
+  });
 
-  ReportEntry.fromJson(super.map)
-      : id = map['id'],
-        productId = map['productId'],
-        quantity = map['quantity'],
-        carbohydrates = map['carbohydrates'],
-        proteins = map['proteins'],
-        fats = map['fats'],
-        super.fromJson();
+  factory ReportEntry.fromJson(Map<String, Object?> json) =>
+      _$ReportEntryFromJson(json);
 
-  @override
-  String toJson() => jsonEncode({
-        'id': id,
-        'productId': productId,
-        'quantity': quantity,
-        'carbohydrates': carbohydrates,
-        'proteins': proteins,
-        'fats': fats,
-      });
+  Map<String, Object?> toJson() {
+    return _$ReportEntryToJson(this);
+  }
 }
 
-class Report extends JsonObject {
-  final String id;
-  final List<ReportEntry> entries;
+@JsonSerializable(explicitToJson: true)
+class Report implements BaseModel {
+  @override
+  int id;
+  final Set<ReportEntry> entries;
+  @JsonKey(fromJson: _fromJson, toJson: _toJson)
   DateTime date;
   double totalCarbohydrates;
   double totalProteins;
   double totalFats;
+
   Report({
-    id,
+    this.id = -1,
     date,
-    this.entries = const [],
-    this.totalCarbohydrates = 0,
-    this.totalProteins = 0,
-    this.totalFats = 0,
-  })  : id = id ?? uuid.v4(),
-        date = date ?? DateTime.now(),
-        super.fromJson({});
+    this.entries = const {},
+    this.totalCarbohydrates = -1,
+    this.totalProteins = -1,
+    this.totalFats = -1,
+  }) : date = date ?? DateTime.now();
 
-  Report.fromJson(super.map)
-      : id = map['id'],
-        date = DateTime.parse(map['date']),
-        totalCarbohydrates = map['totalCarbohydrates'],
-        totalProteins = map['totalProteins'],
-        totalFats = map['totalFats'],
-        entries = (map['entries'] ?? [])
-            .map<ReportEntry>((e) => ReportEntry.fromJson(jsonDecode(e)))
-            .toList(),
-        super.fromJson();
+  factory Report.fromJson(Map<String, Object?> json) => _$ReportFromJson(json);
 
-  @override
-  String toJson() => jsonEncode({
-        'id': id,
-        'date': date.toUtc().toString(),
-        'totalCarbohydrates': totalCarbohydrates,
-        'totalProteins': totalProteins,
-        'totalFats': totalFats,
-        'entries': entries.map((e) => e.toJson()).toList(),
-      });
+  Map<String, Object?> toJson() {
+    return _$ReportToJson(this);
+  }
+
+  static DateTime _fromJson(int time) =>
+      DateTime.fromMillisecondsSinceEpoch(time);
+  static int _toJson(DateTime time) => time.millisecondsSinceEpoch;
 
   void addEntry(ReportEntry entry) {
     entries.add(entry);
+    if (totalCarbohydrates < 0) {
+      totalCarbohydrates = 0;
+      totalProteins = 0;
+      totalFats = 0;
+    }
     totalCarbohydrates += entry.carbohydrates;
     totalProteins += entry.proteins;
     totalFats += entry.fats;
   }
 
   void removeEntry(ReportEntry entry) {
-    entries.removeWhere((element) => element.id == entry.id);
+    entries.remove(entry);
+    if (totalCarbohydrates <= 0) {
+      return;
+    }
     totalCarbohydrates -= entry.carbohydrates;
     totalProteins -= entry.proteins;
     totalFats -= entry.fats;
   }
+}
+
+@JsonSerializable(explicitToJson: true)
+class DailyLimit implements BaseModel {
+  double totalCarbohydrates;
+  double totalProteins;
+  double totalFats;
+
+  DailyLimit({
+    this.id = -1,
+    this.totalCarbohydrates = -1,
+    this.totalProteins = -1,
+    this.totalFats = -1,
+  });
+
+  factory DailyLimit.fromJson(Map<String, Object?> json) =>
+      _$DailyLimitFromJson(json);
+
+  Map<String, Object?> toJson() {
+    return _$DailyLimitToJson(this);
+  }
+
+  @override
+  int id;
 }

@@ -6,6 +6,7 @@ import 'package:diet_tracker/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => AppProvider(),

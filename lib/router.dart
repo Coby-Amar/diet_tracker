@@ -1,15 +1,15 @@
-import 'package:diet_tracker/pages/reports/update.report.dart';
+import 'package:diet_tracker/pages/products/create_update.product.dart';
+import 'package:diet_tracker/pages/reports/create_update.report.dart';
+import 'package:diet_tracker/pages/settings/daily_limit.page.dart';
+import 'package:diet_tracker/pages/settings/settings.page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:diet_tracker/app.dart';
-import 'package:diet_tracker/pages/home.dart';
-import 'package:diet_tracker/pages/products/products.dart';
-import 'package:diet_tracker/pages/reports/reports.dart';
-import 'package:diet_tracker/pages/products/create.product.dart';
-import 'package:diet_tracker/pages/products/update.product.dart';
-import 'package:diet_tracker/pages/reports/create.report.dart';
+import 'package:diet_tracker/pages/home.page.dart';
+import 'package:diet_tracker/pages/products/products.page.dart';
+import 'package:diet_tracker/pages/reports/reports.page.dart';
 import 'package:diet_tracker/pages/fullscreen_image.dart';
 
 class DismissKeyboardNavigationObserver extends NavigatorObserver {
@@ -32,10 +32,22 @@ final goRouterConfig = GoRouter(
       builder: (context, state) => const FullScreenImagePage(),
     ),
     ShellRoute(
-      parentNavigatorKey: rootNavigationKey,
       navigatorKey: homeNavigationKey,
       builder: (context, state, child) => HomePage(child: child),
       routes: [
+        GoRoute(
+            name: "settings",
+            path: "/settings",
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: SettingsPage()),
+            routes: [
+              GoRoute(
+                parentNavigatorKey: rootNavigationKey,
+                name: "daily_limit",
+                path: "/daily_limit",
+                builder: (context, state) => const DailyLimitPage(),
+              ),
+            ]),
         GoRoute(
           name: "products",
           path: "/products",
@@ -46,13 +58,13 @@ final goRouterConfig = GoRouter(
               parentNavigatorKey: rootNavigationKey,
               name: "create_product",
               path: "create",
-              builder: (context, state) => const CreateProductPage(),
+              builder: (context, state) => const CreateUpdateProductPage(),
             ),
             GoRoute(
               parentNavigatorKey: rootNavigationKey,
               name: "update_product",
               path: "update",
-              builder: (context, state) => const UpdateProductPage(),
+              builder: (context, state) => const CreateUpdateProductPage(),
             ),
           ],
         ),
@@ -66,15 +78,21 @@ final goRouterConfig = GoRouter(
               parentNavigatorKey: rootNavigationKey,
               name: "create_report",
               path: "create",
-              builder: (context, state) => const CreateReportPage(),
+              builder: (context, state) => const CreateUpdateReportPage(),
             ),
             GoRoute(
               parentNavigatorKey: rootNavigationKey,
               name: "update_report",
               path: "update",
-              builder: (context, state) => const UpdateReportPage(),
+              builder: (context, state) => const CreateUpdateReportPage(),
             ),
           ],
+        ),
+        GoRoute(
+          name: "calculator",
+          path: "/calculator",
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: Text("Not Built Yet")),
         ),
       ],
     ),

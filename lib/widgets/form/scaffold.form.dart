@@ -1,16 +1,15 @@
 import 'dart:async';
+import 'package:diet_tracker/resources/models.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:diet_tracker/resources/models.dart';
 import 'package:diet_tracker/validations.dart';
 
-typedef FormBuilder<M extends JsonObject> = Widget Function(ThemeData theme,
+typedef FormBuilder<M extends BaseModel> = Widget Function(ThemeData theme,
     Validations validations, M model, void Function(VoidCallback) setState);
-typedef FormOnSuccess<M extends JsonObject> = FutureOr<Object?> Function(
-    M model);
+typedef FormOnSuccess<M extends BaseModel> = FutureOr<bool?> Function(M model);
 
-class ScaffoldForm<M extends JsonObject> extends StatefulWidget {
+class ScaffoldForm<M extends BaseModel> extends StatefulWidget {
   final FormBuilder<M> formBuilder;
   final FormOnSuccess<M> onSuccess;
   final M model;
@@ -24,7 +23,7 @@ class ScaffoldForm<M extends JsonObject> extends StatefulWidget {
     required this.title,
     required this.onSuccess,
     required this.formBuilder,
-    this.formSubmitText = 'Add',
+    this.formSubmitText = 'הוסף',
     this.actions,
     this.floatingActionButton,
   });
@@ -33,7 +32,7 @@ class ScaffoldForm<M extends JsonObject> extends StatefulWidget {
   State<ScaffoldForm> createState() => _ScaffoldFormState<M>();
 }
 
-class _ScaffoldFormState<M extends JsonObject> extends State<ScaffoldForm<M>> {
+class _ScaffoldFormState<M extends BaseModel> extends State<ScaffoldForm<M>> {
   final _formKey = GlobalKey<FormState>();
 
   M get model => widget.model;
@@ -60,13 +59,11 @@ class _ScaffoldFormState<M extends JsonObject> extends State<ScaffoldForm<M>> {
         key: _formKey,
         child: Column(
           children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                color: theme.cardColor,
-                child: SingleChildScrollView(
-                  child: formBuilder(theme, Validations(), model, setState),
-                ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              color: theme.cardColor,
+              child: SingleChildScrollView(
+                child: formBuilder(theme, Validations(), model, setState),
               ),
             ),
             Padding(
@@ -81,7 +78,7 @@ class _ScaffoldFormState<M extends JsonObject> extends State<ScaffoldForm<M>> {
                   final canPop = context.canPop();
                   final pop = context.pop;
                   final response = await onSuccess(model);
-                  if (canPop) {
+                  if (canPop && (response == null || response)) {
                     pop(response);
                   }
                 },

@@ -18,10 +18,13 @@ class Application extends StatelessWidget {
         builder: (context, child) {
           if (child == null) {
             return ErrorWidget(
-              Exception("Oops something went wrong should not be here"),
+              Exception("אופס, משהו השתבש לא צריך להיות כאן"),
             );
           }
-          return child;
+          return Directionality(
+            textDirection: TextDirection.rtl,
+            child: child,
+          );
         },
       );
 }

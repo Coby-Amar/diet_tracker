@@ -1,16 +1,27 @@
-import 'package:diet_tracker/resources/db.dart';
-import 'package:diet_tracker/resources/extensions/dates.extension.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:diet_tracker/resources/database/database.dart';
+import 'package:diet_tracker/resources/database/report.table.dart';
 import 'package:diet_tracker/resources/models.dart';
+import 'package:diet_tracker/resources/extensions/dates.extension.dart';
+import 'package:drift/drift.dart';
+
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AppProvider extends ChangeNotifier {
+  final AppDatabase _database = AppDatabase();
   String _searchReportsQuery = '';
   String _searchProductsQuery = '';
-  final List<Report> reports = [];
-  final List<Product> products = [];
+  final reports = <Report>{};
+  final products = <Product>{};
+  DailyLimit _dailyLimit = DailyLimit();
   AppProvider() {
     loadReports();
     loadProducts();
+    loadDailyLimit();
   }
 
   set searchReportsQuery(String query) {
@@ -18,7 +29,7 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Report> get searchReportsFiltered {
+  Set<Report> get searchReportsFiltered {
     if (_searchReportsQuery.isEmpty) {
       return reports;
     }
@@ -26,7 +37,7 @@ class AppProvider extends ChangeNotifier {
         .where((element) => element.date.toDayMonthYear
             .replaceAll('/', '')
             .contains(_searchReportsQuery.replaceAll('/', '')))
-        .toList();
+        .toSet();
   }
 
   set searchProductsQuery(String query) {
@@ -39,89 +50,194 @@ class AppProvider extends ChangeNotifier {
       .toList();
 
   Future<void> loadReports() async {
-    final response = await DBService.instance.loadReports();
+    final dbReports = await _database.select(_database.dBReport).get();
+    final loadedReports = <Report>[];
+    for (var dbReport in dbReports) {
+      final dbReportEntries = await (_database.select(_database.dBReportEntry)
+            ..where((entry) => entry.id.isIn(dbReport.entries.items)))
+          .get();
+      loadedReports.add(
+        Report(
+          id: dbReport.id,
+          date: dbReport.date,
+          totalCarbohydrates: dbReport.totalCarbohydrates,
+          totalFats: dbReport.totalFats,
+          totalProteins: dbReport.totalProteins,
+          entries: dbReportEntries
+              .map((dbEntry) => ReportEntry.fromJson(dbEntry.toJson()))
+              .toSet(),
+        ),
+      );
+    }
     reports.clear();
-    reports.addAll(response);
+    reports.addAll(loadedReports);
     notifyListeners();
   }
 
-  Future<void> loadProducts() async {
-    final response = await DBService.instance.loadProducts();
-    products.clear();
-    products.addAll(response);
-    notifyListeners();
+  Future<List<int>> _addReportEntries(Set<ReportEntry> entries) async {
+    final addedEntries = <int>[];
+    for (final entry in entries) {
+      final id = await _database
+          .into(_database.dBReportEntry)
+          .insert(DBReportEntryCompanion.insert(
+            quantity: entry.quantity,
+            carbohydrates: entry.carbohydrates,
+            proteins: entry.proteins,
+            fats: entry.fats,
+            productId: entry.productId,
+          ));
+      entry.id = id;
+      addedEntries.add(id);
+    }
+    return addedEntries;
   }
 
   Future<void> addReport(Report report) async {
-    final response = await DBService.instance.addReport(report);
-    if (!response) {
-      return Future.value();
-    }
+    final addedEntries = await _addReportEntries(report.entries);
+    final id = await _database.into(_database.dBReport).insert(
+          DBReportCompanion.insert(
+            date: report.date.normalize,
+            totalCarbohydrates: report.totalCarbohydrates,
+            totalProteins: report.totalProteins,
+            totalFats: report.totalFats,
+            entries: DBReportEntries(items: addedEntries),
+          ),
+        );
+    report.id = id;
     reports.add(report);
     notifyListeners();
   }
 
   Future<void> updateReport(Report report) async {
-    final response = await DBService.instance.updateReport(report);
-    if (!response) {
-      return Future.value();
-    }
-    final foundIndex = reports.indexWhere((element) => element.id == report.id);
-    if (foundIndex < 0) {
-      return Future.value();
-    }
-    reports.removeAt(foundIndex);
-    reports.insert(foundIndex, report);
+    final foundPrevReport =
+        reports.firstWhere((element) => element.id == report.id);
+
+    // Delete then Add Report Entries
+    await (_database.delete(_database.dBReportEntry)
+          ..where((entry) =>
+              entry.id.isIn(foundPrevReport.entries.map((entry) => entry.id))))
+        .go();
+    await _addReportEntries(report.entries);
+
+    // Update Report
+    final dbReport = DBReportData(
+      id: report.id,
+      date: report.date,
+      totalCarbohydrates: report.totalCarbohydrates,
+      totalProteins: report.totalProteins,
+      totalFats: report.totalFats,
+      entries: DBReportEntries(
+          items: report.entries.map((entry) => entry.id).toList()),
+    );
+    await _database.update(_database.dBReport).replace(dbReport);
+    reports.remove(foundPrevReport);
+    reports.add(report);
     notifyListeners();
   }
 
-  Future<void> deleteReport(String id) async {
-    final response = await DBService.instance.deleteReport(id);
-    if (!response) {
-      return Future.value();
+  Future<void> deleteReport(int id) async {
+    final wasDeleted = await (_database.delete(_database.dBReport)
+          ..where((e) => e.id.equals(id)))
+        .go();
+    if (wasDeleted < 1) {
+      return;
     }
-    final foundIndex = reports.indexWhere((element) => element.id == id);
-    if (foundIndex < 0) {
-      return Future.value();
-    }
-    reports.removeAt(foundIndex);
+    final foundIndex = reports.firstWhere((element) => element.id == id);
+    reports.remove(foundIndex);
+    notifyListeners();
+  }
+
+  Future<void> loadProducts() async {
+    final response = await _database.select(_database.dBProduct).get();
+    products.clear();
+    products.addAll(response.map(
+      (product) => Product(
+        id: product.id,
+        name: product.name,
+        image: product.image,
+        units: product.units,
+        quantity: product.quantity,
+        carbohydrates: product.carbohydrates,
+        proteins: product.proteins,
+        fats: product.fats,
+        cooked: product.cooked,
+      ),
+    ));
     notifyListeners();
   }
 
   Future<void> addProduct(Product product) async {
-    final response = await DBService.instance.addProduct(product);
-    if (!response) {
-      return Future.value();
-    }
+    final id = await _database.into(_database.dBProduct).insert(
+          DBProductCompanion.insert(
+            name: product.name,
+            image: Value(product.image),
+            units: product.units,
+            quantity: product.quantity,
+            carbohydrates: product.carbohydrates,
+            proteins: product.proteins,
+            fats: product.fats,
+            cooked: product.cooked,
+          ),
+        );
+    product.id = id;
     products.add(product);
     notifyListeners();
   }
 
   Future<void> updateProduct(Product product) async {
-    final response = await DBService.instance.updateProduct(product);
-    if (!response) {
-      return Future.value();
+    final wasChanged = await _database.update(_database.dBProduct).replace(
+          DBProductData(
+            id: product.id,
+            image: product.image,
+            name: product.name,
+            units: product.units,
+            quantity: product.quantity,
+            carbohydrates: product.carbohydrates,
+            proteins: product.proteins,
+            fats: product.fats,
+            cooked: product.cooked,
+          ),
+        );
+    if (!wasChanged) {
+      return;
     }
-    final foundIndex =
-        products.indexWhere((element) => element.id == product.id);
-    if (foundIndex < 0) {
-      return Future.value();
-    }
-    products.removeAt(foundIndex);
-    products.insert(foundIndex, product);
+    final foundPrevProduct =
+        products.firstWhere((element) => element.id == product.id);
+    products.remove(foundPrevProduct);
+    products.add(product);
     notifyListeners();
   }
 
-  Future<void> deleteProduct(String id) async {
-    final response = await DBService.instance.deleteProduct(id);
-    if (!response) {
-      return Future.value();
+  Future<void> deleteProduct(int id) async {
+    final wasDelete = await (_database.delete(_database.dBProduct)
+          ..where((e) => e.id.equals(id)))
+        .go();
+    if (wasDelete < 1) {
+      return;
     }
-    final foundIndex = products.indexWhere((element) => element.id == id);
-    if (foundIndex < 0) {
-      return Future.value();
-    }
-    products.removeAt(foundIndex);
+    final foundProductToDelete =
+        products.firstWhere((element) => element.id == id);
+    products.remove(foundProductToDelete);
     notifyListeners();
+  }
+
+  Future<void> loadDailyLimit() async {
+    final rootPath = await getApplicationSupportDirectory();
+    final dailyLimitFile = File(join(rootPath.path, 'daily_limit.json'));
+    if (dailyLimitFile.existsSync()) {
+      final dailyLimitjson = jsonDecode(dailyLimitFile.readAsStringSync());
+      _dailyLimit = DailyLimit.fromJson(dailyLimitjson);
+    }
+  }
+
+  DailyLimit get dailyLimit {
+    return DailyLimit.fromJson(_dailyLimit.toJson());
+  }
+
+  Future<void> setDailyLimit(DailyLimit dailyLimit) async {
+    final rootPath = await getApplicationSupportDirectory();
+    _dailyLimit = dailyLimit;
+    File(join(rootPath.path, 'daily_limit.json'))
+        .writeAsStringSync(jsonEncode(dailyLimit.toJson()));
   }
 }

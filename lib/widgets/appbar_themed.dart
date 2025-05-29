@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 class AppBarThemed extends StatefulWidget implements PreferredSizeWidget {
   final String title;
+  final Widget? leading;
   final List<Widget>? actions;
   final bool showActions;
   const AppBarThemed({
     super.key,
     required this.title,
+    this.leading,
     this.actions = const [],
     this.showActions = false,
   });
@@ -24,6 +26,7 @@ class _AppBarThemedState extends State<AppBarThemed> {
     return AppBar(
       centerTitle: true,
       backgroundColor: theme.primaryColorLight,
+      leading: widget.leading,
       actions: widget.actions,
       title: Text(
         widget.title,

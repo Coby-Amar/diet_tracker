@@ -1,4 +1,8 @@
 extension DateFormatters on DateTime {
+  DateTime get normalize {
+    return DateTime(year, month, day);
+  }
+
   String get toDayMonthYear {
     final day = this.day;
     final month = this.month;

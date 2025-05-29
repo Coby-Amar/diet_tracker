@@ -25,9 +25,9 @@ class ReportItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Fats: ${report.totalFats.toDisplay}'),
-            Text('Proteins: ${report.totalProteins.toDisplay}'),
-            Text('Carbohydrates: ${report.totalCarbohydrates.toDisplay}'),
+            Text('שומן: ${report.totalFats.toDisplay}'),
+            Text('חלבון: ${report.totalProteins.toDisplay}'),
+            Text('פחממה: ${report.totalCarbohydrates.toDisplay}'),
           ],
         ),
       );

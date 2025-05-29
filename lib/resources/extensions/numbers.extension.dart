@@ -1,9 +1,14 @@
-final _emptyRegExp = RegExp(r'.0$');
-
 extension DoubleFormatters on double {
   String get toDisplay {
-    if (toString().contains('.0')) {
-      return toString().replaceFirst(_emptyRegExp, '');
+    if (this == -1) {
+      return '';
+    }
+    return toStringAsFixed(2);
+  }
+
+  String get toEmptyDisplay {
+    if (this == -1) {
+      return '0';
     }
     return toStringAsFixed(2);
   }
