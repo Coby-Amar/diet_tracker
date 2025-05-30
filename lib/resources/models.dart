@@ -19,16 +19,30 @@ enum ImageType {
 }
 
 enum Units {
-  @JsonValue("none")
+  @JsonValue("קלום")
   none,
-  @JsonValue("grams")
+  @JsonValue("גרם")
   grams,
-  @JsonValue("kilograms")
+  @JsonValue('ק"ג')
   kilograms,
-  @JsonValue("pounds")
+  @JsonValue("פאונד")
   pounds,
-  @JsonValue("serving")
+  @JsonValue("המגישה")
   serving,
+}
+
+const _unitTranslations = {
+  Units.none: '',
+  Units.grams: 'גרם',
+  Units.kilograms: 'ק"ג',
+  Units.pounds: 'פאונד',
+  Units.serving: 'המגישה',
+};
+
+extension UnitNames on Units {
+  String get translation {
+    return _unitTranslations[this] ?? '';
+  }
 }
 
 class Uint8ListConverter implements JsonConverter<Uint8List?, List<int>?> {
@@ -86,11 +100,7 @@ class Product implements BaseModel {
 extension ProductImage on Product {
   Widget get imageOrDefault {
     if (image?.isNotEmpty ?? false) {
-      return Image.memory(
-        image!,
-        width: 100,
-        height: 100,
-      );
+      return Image.memory(image!);
     }
     return const Image(image: AssetImage('assets/icon/icon.png'));
   }

@@ -16,47 +16,50 @@ class ReportsPage extends StatelessWidget {
     final reports = context.watch<AppProvider>().searchReportsFiltered;
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: appProvider.loadReports,
+        onRefresh: () async {
+          appProvider.searchReportsQuery = '';
+          await appProvider.loadReports();
+        },
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SearchBar(
-                hintText: 'Search by date',
-                keyboardType: TextInputType.datetime,
-                leading: const Icon(Icons.search),
-                shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
-                elevation: const WidgetStatePropertyAll(10),
-                onChanged: (value) => appProvider.searchReportsQuery = value,
-              ),
+            SearchBar(
+              hintText: 'חיפוש לפי תאריך',
+              keyboardType: TextInputType.datetime,
+              leading: const Icon(Icons.search),
+              shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
+              elevation: const WidgetStatePropertyAll(10),
+              onChanged: (value) => appProvider.searchReportsQuery = value,
             ),
             Expanded(
-              child: ListView.separated(
-                itemBuilder: (context, index) => ReportItem(
-                  report: reports.elementAt(index),
-                  onEdit: () => context.pushNamed('update_report',
-                      extra: reports.elementAt(index)),
-                  onDelete: () async {
-                    final response = await showDialog(
-                      context: context,
-                      builder: (context) => const AreYouSureDialog(
-                        content: 'This report will be lost FOREVER',
-                      ),
-                    );
-                    if (response != null && response) {
-                      appProvider.deleteReport(reports.elementAt(index).id);
-                    }
-                  },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.separated(
+                  itemBuilder: (context, index) => ReportItem(
+                    report: reports.elementAt(index),
+                    onEdit: () => context.goNamed('update_report',
+                        extra: reports.elementAt(index)),
+                    onDelete: () async {
+                      final response = await showDialog(
+                        context: context,
+                        builder: (context) => const AreYouSureDialog(
+                          content: 'This report will be lost FOREVER',
+                        ),
+                      );
+                      if (response != null && response) {
+                        appProvider.deleteReport(reports.elementAt(index).id);
+                      }
+                    },
+                  ),
+                  itemCount: reports.length,
+                  separatorBuilder: (context, index) => const Divider(),
                 ),
-                itemCount: reports.length,
-                separatorBuilder: (context, index) => const Divider(),
               ),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingAddButton(
-        onPressed: () => context.pushNamed("create_report"),
+        onPressed: () => context.goNamed("create_report"),
       ),
     );
   }

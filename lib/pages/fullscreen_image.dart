@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:diet_tracker/widgets/appbar_themed.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,10 +22,10 @@ class FullScreenImagePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final image = GoRouterState.of(context).extra as File;
+    final image = GoRouterState.of(context).extra as Uint8List;
     return Scaffold(
-      appBar: const AppBarThemed(title: 'Full screen'),
-      body: Image.file(
+      appBar: const AppBarThemed(title: 'תמונה מלאה'),
+      body: Image.memory(
         image,
         fit: BoxFit.contain,
         height: double.infinity,

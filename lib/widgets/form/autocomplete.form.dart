@@ -50,32 +50,48 @@ class AutoCompleteFormField extends StatelessWidget {
                   borderRadius:
                       BorderRadius.vertical(bottom: Radius.circular(4.0)),
                 ),
-                child: SizedBox(
-                  height: 135.0 * options.length,
-                  width: constraints.biggest.width,
-                  child: ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: options.length,
-                    shrinkWrap: false,
-                    itemBuilder: (BuildContext context, int index) {
-                      final option = options.elementAt(index);
-                      return InkWell(
-                        onTap: () {
-                          field.didChange(option);
-                          onSelected(option);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            children: [
-                              option.imageOrDefault,
-                              Text(option.name),
-                            ],
+                child: ListView.separated(
+                  padding: EdgeInsets.zero,
+                  itemCount: options.length,
+                  shrinkWrap: false,
+                  separatorBuilder: (context, index) => Divider(),
+                  itemBuilder: (BuildContext context, int index) {
+                    final option = options.elementAt(index);
+                    // return ListTile(
+                    //   onTap: () {
+                    //     field.didChange(option);
+                    //     onSelected(option);
+                    //   },
+                    //   title: Text(option.name),
+                    //   leading: option.image != null
+                    //       ? Expanded(
+                    //           flex: 1,
+                    //           child: Image.memory(
+                    //             option.image!,
+                    //             // width: 25,
+                    //             // height: 25,
+                    //           ),
+                    //         )
+                    //       : null,
+                    // );
+                    return InkWell(
+                      onTap: () {
+                        field.didChange(option);
+                        onSelected(option);
+                      },
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: option.imageOrDefault,
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                          Expanded(flex: 1, child: Text(option.name)),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

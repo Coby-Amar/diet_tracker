@@ -55,37 +55,40 @@ class _ScaffoldFormState<M extends BaseModel> extends State<ScaffoldForm<M>> {
         centerTitle: true,
         actions: actions,
       ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              color: theme.cardColor,
-              child: SingleChildScrollView(
-                child: formBuilder(theme, Validations(), model, setState),
+      body: Container(
+        color: theme.cardColor,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Expanded(
+                  child: formBuilder(theme, Validations(), model, setState)),
+              Container(
+                color: theme.scaffoldBackgroundColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        final result = _formKey.currentState?.validate();
+                        if (result == null || !result) {
+                          return;
+                        }
+                        _formKey.currentState?.save();
+                        final canPop = context.canPop();
+                        final pop = context.pop;
+                        final response = await onSuccess(model);
+                        if (canPop && (response == null || response)) {
+                          pop(response);
+                        }
+                      },
+                      child: Text(formSubmitText),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  final result = _formKey.currentState?.validate();
-                  if (result == null || !result) {
-                    return;
-                  }
-                  _formKey.currentState?.save();
-                  final canPop = context.canPop();
-                  final pop = context.pop;
-                  final response = await onSuccess(model);
-                  if (canPop && (response == null || response)) {
-                    pop(response);
-                  }
-                },
-                child: Text(formSubmitText),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButton: floatingActionButton,

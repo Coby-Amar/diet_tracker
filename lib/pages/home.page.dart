@@ -1,6 +1,8 @@
+import 'package:diet_tracker/resources/provider.dart';
 import 'package:diet_tracker/widgets/appbar_themed.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   final Widget child;
@@ -15,20 +17,23 @@ class _HomePageState extends State<HomePage> {
   int currentPageIndex = 0;
 
   _onDestinationSelected(int index) {
-    var pageTitle = 'Reports';
+    final appProvider = context.read<AppProvider>();
+    appProvider.searchReportsQuery = '';
+    appProvider.searchProductsQuery = '';
+    var pageTitle = 'דוחות';
     switch (index) {
       case 0:
         context.goNamed("reports");
         break;
       case 1:
-        pageTitle = 'Products';
+        pageTitle = 'מוצרים';
         context.goNamed("products");
         break;
       // case 2:
       //   pageTitle = 'Calculator';
       //   context.goNamed("calculator");
       case 2:
-        pageTitle = 'Settings';
+        pageTitle = 'הגדרות';
         context.goNamed("settings");
         break;
     }

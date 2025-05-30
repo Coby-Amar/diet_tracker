@@ -16,13 +16,17 @@ class ProductsPage extends StatelessWidget {
     final products = context.watch<AppProvider>().searchProductsFiltered;
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: appProvider.loadProducts,
+        onRefresh: () async {
+          appProvider.searchProductsQuery = '';
+          await appProvider.loadProducts();
+        },
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            PopScope(
+              onPopInvokedWithResult: (didPop, result) =>
+                  appProvider.searchProductsQuery = '',
               child: SearchBar(
-                hintText: 'Search by name',
+                hintText: 'חפש לפי שם',
                 keyboardType: TextInputType.name,
                 leading: const Icon(Icons.search),
                 shape: const WidgetStatePropertyAll(RoundedRectangleBorder()),
@@ -38,7 +42,7 @@ class ProductsPage extends StatelessWidget {
                   separatorBuilder: (_, __) => const Divider(),
                   itemBuilder: (context, index) => ProductItem(
                       product: products[index],
-                      onEdit: () => context.pushNamed(
+                      onEdit: () => context.goNamed(
                             "update_product",
                             extra: products[index],
                           ),
@@ -60,7 +64,7 @@ class ProductsPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingAddButton(
-        onPressed: () => context.pushNamed("create_product"),
+        onPressed: () => context.goNamed("create_product"),
       ),
     );
   }

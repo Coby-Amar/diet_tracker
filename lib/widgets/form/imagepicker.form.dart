@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:diet_tracker/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 final _picker = ImagePicker();
@@ -46,12 +47,18 @@ class ImageFormField extends StatelessWidget {
                     child: Text(label),
                   ),
                   if (field.value != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Image.memory(
-                        field.value!,
-                        height: 100,
-                        width: 100,
+                    InkWell(
+                      onTap: () => context.pushNamed(
+                        'fullscreen_image',
+                        extra: field.value,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Image.memory(
+                          field.value!,
+                          height: 100,
+                          width: 100,
+                        ),
                       ),
                     ),
                 ],

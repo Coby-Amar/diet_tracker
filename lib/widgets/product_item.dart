@@ -1,3 +1,4 @@
+import 'package:diet_tracker/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -28,7 +29,8 @@ class ProductItem extends StatelessWidget {
           ),
         ),
         title: Text(product.name),
-        subtitle: Text('${product.quantity.toDisplay} ${product.units.name}'),
+        subtitle:
+            Text('${product.quantity.toDisplay} ${product.units.translation}'),
         isThreeLine: true,
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

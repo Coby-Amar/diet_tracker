@@ -88,7 +88,7 @@ class CreateUpdateProductPage extends StatelessWidget with OpenError {
                 .map(
                   (value) => DropdownMenuItem<Units>(
                     value: value,
-                    child: Text(value.name),
+                    child: Text(value.translation),
                   ),
                 )
                 .toList(),

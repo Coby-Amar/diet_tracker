@@ -52,6 +52,26 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
+  _insertBaseProducts() async {
+    final baseProductsString =
+        await rootBundle.loadString('assets/base_products.json');
+    final baseProducts = jsonDecode(baseProductsString);
+    for (final productJson in baseProducts) {
+      await customStatement(
+          'INSERT INTO ${dBProduct.aliasedName} (image, name, units, quantity, carbohydrates, proteins, fats, cooked) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)',
+          [
+            base64Decode(productJson['image']),
+            productJson['name'],
+            productJson['units'],
+            productJson['quantity'],
+            productJson['carbohydrates'],
+            productJson['proteins'],
+            productJson['fats'],
+            productJson['cooked'],
+          ]);
+    }
+  }
+
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
@@ -62,23 +82,7 @@ class AppDatabase extends _$AppDatabase {
         //   await m.createTable(table);
         // }
         if (openingDetails.wasCreated) {
-          final baseProductsString =
-              await rootBundle.loadString('assets/base_products.json');
-          final baseProducts = jsonDecode(baseProductsString);
-          for (final productJson in baseProducts) {
-            await customStatement(
-                'INSERT INTO ${dBProduct.aliasedName} (image, name, units, quantity, carbohydrates, proteins, fats, cooked) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)',
-                [
-                  base64Decode(productJson['image']),
-                  productJson['name'],
-                  productJson['units'],
-                  productJson['quantity'],
-                  productJson['carbohydrates'],
-                  productJson['proteins'],
-                  productJson['fats'],
-                  productJson['cooked'],
-                ]);
-          }
+          await _insertBaseProducts();
         }
       },
     );

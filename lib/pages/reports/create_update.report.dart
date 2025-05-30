@@ -45,7 +45,7 @@ class CreateUpdateReportPage extends StatelessWidget with OpenError {
         }
       },
       formBuilder: (theme, validations, reportModel, setState) => Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -119,46 +119,30 @@ class CreateUpdateReportPage extends StatelessWidget with OpenError {
                 ],
               ),
             ),
-            Column(
-              children: reportModel.entries
-                  .map(
-                    (entry) => DisplayReportEntry(
-                      reportEntry: entry,
-                      onDelete: () =>
+            Expanded(
+              child: ListView.separated(
+                itemCount: reportModel.entries.length,
+                separatorBuilder: (context, index) => Divider(),
+                itemBuilder: (context, index) {
+                  final entry = reportModel.entries.elementAt(index);
+                  final product =
+                      products.firstWhere((e) => entry.productId == e.id);
+                  return ListTile(
+                    leading: product.imageOrDefault,
+                    title: Text(product.name),
+                    subtitle: Text(
+                        '${entry.quantity.toDisplay} ${product.units.translation}'),
+                    trailing: IconButton.filledTonal(
+                      onPressed: () =>
                           setState(() => reportModel.removeEntry(entry)),
+                      icon: const Icon(Icons.remove),
                     ),
-                  )
-                  .toList(),
+                  );
+                },
+              ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class DisplayReportEntry extends StatelessWidget {
-  final ReportEntry reportEntry;
-  final VoidCallback onDelete;
-  const DisplayReportEntry({
-    super.key,
-    required this.reportEntry,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final product = context
-        .read<AppProvider>()
-        .products
-        .firstWhere((e) => reportEntry.productId == e.id);
-    return ListTile(
-      leading: product.imageOrDefault,
-      title: Text(product.name),
-      subtitle: Text('${reportEntry.quantity.toDisplay} ${product.units.name}'),
-      trailing: IconButton.filledTonal(
-        onPressed: onDelete,
-        icon: const Icon(Icons.remove),
       ),
     );
   }
