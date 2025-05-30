@@ -188,6 +188,8 @@ class Report implements BaseModel {
 
 @JsonSerializable(explicitToJson: true)
 class DailyLimit implements BaseModel {
+  @override
+  int id;
   double totalCarbohydrates;
   double totalProteins;
   double totalFats;
@@ -206,6 +208,14 @@ class DailyLimit implements BaseModel {
     return _$DailyLimitToJson(this);
   }
 
-  @override
-  int id;
+  bool get isNotEmpty {
+    return !isEmpty;
+  }
+
+  bool get isEmpty {
+    if (totalCarbohydrates < 1 || totalFats < 1 || totalProteins < 1) {
+      return true;
+    }
+    return false;
+  }
 }

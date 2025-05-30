@@ -1,3 +1,6 @@
+import 'package:diet_tracker/resources/extensions/dates.extension.dart';
+import 'package:diet_tracker/resources/models.dart';
+import 'package:diet_tracker/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +17,11 @@ class ReportsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final appProvider = context.read<AppProvider>();
     final reports = context.watch<AppProvider>().searchReportsFiltered;
+    final todaysReport = reports.singleWhere(
+        (report) =>
+            report.date.normalize.isAtSameMomentAs(DateTime.now().normalize),
+        orElse: () => Report());
+    final dailyLimit = appProvider.dailyLimit;
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
@@ -22,6 +30,48 @@ class ReportsPage extends StatelessWidget {
         },
         child: Column(
           children: [
+            if (dailyLimit.isNotEmpty && todaysReport.id != -1)
+              Container(
+                color: theme.primaryColorDark,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      'כמות שנשאר להיום',
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          'פחממה',
+                        ),
+                        Text(
+                          '${dailyLimit.totalCarbohydrates - todaysReport.totalCarbohydrates}',
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          'חלבון',
+                        ),
+                        Text(
+                          '${dailyLimit.totalProteins - todaysReport.totalProteins}',
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Text(
+                          'שומן',
+                        ),
+                        Text(
+                          '${dailyLimit.totalFats - todaysReport.totalFats}',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             SearchBar(
               hintText: 'חיפוש לפי תאריך',
               keyboardType: TextInputType.datetime,
