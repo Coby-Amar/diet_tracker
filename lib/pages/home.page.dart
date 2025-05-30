@@ -13,10 +13,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String currentPageTitle = 'Reports';
+  String currentPageTitle = 'דוחות';
   int currentPageIndex = 0;
 
-  _onDestinationSelected(int index) {
+  void _onDestinationSelected(int index) {
     final appProvider = context.read<AppProvider>();
     appProvider.searchReportsQuery = '';
     appProvider.searchProductsQuery = '';

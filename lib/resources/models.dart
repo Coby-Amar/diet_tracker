@@ -102,7 +102,7 @@ extension ProductImage on Product {
     if (image?.isNotEmpty ?? false) {
       return Image.memory(image!);
     }
-    return const Image(image: AssetImage('assets/icon/icon.png'));
+    return const Image(image: AssetImage('assets/icon.png'));
   }
 }
 

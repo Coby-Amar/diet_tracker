@@ -10,6 +10,7 @@ class ErrorDialog extends SnackBar {
 }
 
 mixin OpenError {
-  showSnackBar(BuildContext context, ErrorDialog errorDialog) =>
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
+          BuildContext context, ErrorDialog errorDialog) =>
       ScaffoldMessenger.of(context).showSnackBar(errorDialog);
 }

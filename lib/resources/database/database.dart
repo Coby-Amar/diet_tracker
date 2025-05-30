@@ -1,38 +1,15 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:flutter/services.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:diet_tracker/resources/models.dart';
 import 'package:diet_tracker/resources/database/product.table.dart';
 import 'package:diet_tracker/resources/database/report.table.dart';
-import 'package:sqlite3/sqlite3.dart';
 
 part 'database.g.dart';
-
-// LazyDatabase _openConnection() {
-//   return LazyDatabase(() async {
-//     final dbFolder = await getApplicationSupportDirectory();
-//     final file = File(join(dbFolder.path, 'diet_tracker_db.sqlite'));
-
-//     // if (!await file.exists()) {
-//     //   final blob = await rootBundle.load('assets/diet_tracker_db.sqlite');
-//     //   final buffer = blob.buffer;
-//     //   await file.writeAsBytes(
-//     //       buffer.asUint8List(blob.offsetInBytes, blob.lengthInBytes));
-//     // }
-
-//     final cachebase = (await getTemporaryDirectory()).path;
-//     sqlite3.tempDirectory = cachebase;
-//     return NativeDatabase.createInBackground(file);
-//   });
-// }
 
 @DriftDatabase(tables: [DBProduct, DBReportEntry, DBReport])
 class AppDatabase extends _$AppDatabase {
@@ -52,7 +29,7 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
-  _insertBaseProducts() async {
+  Future<void> _insertBaseProducts() async {
     final baseProductsString =
         await rootBundle.loadString('assets/base_products.json');
     final baseProducts = jsonDecode(baseProductsString);
