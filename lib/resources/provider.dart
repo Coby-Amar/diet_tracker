@@ -50,7 +50,12 @@ class AppProvider extends ChangeNotifier {
       .toList();
 
   Future<void> loadReports() async {
-    final dbReports = await _database.select(_database.dBReport).get();
+    final dbReports = await (_database.select(_database.dBReport)
+          ..orderBy([
+            (report) =>
+                OrderingTerm(expression: report.date, mode: OrderingMode.desc)
+          ]))
+        .get();
     final loadedReports = <Report>[];
     for (var dbReport in dbReports) {
       final dbReportEntries = await (_database.select(_database.dBReportEntry)
@@ -148,7 +153,12 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<void> loadProducts() async {
-    final response = await _database.select(_database.dBProduct).get();
+    final response = await (_database.select(_database.dBProduct)
+          ..orderBy([
+            (product) =>
+                OrderingTerm(expression: product.name, mode: OrderingMode.asc)
+          ]))
+        .get();
     products.clear();
     products.addAll(response.map(
       (product) => Product(
