@@ -71,7 +71,7 @@ else
         echo "⚠️ Git push failed. Please check your remote or authentication."
     fi
     echo "Trying to build APK..."
-    if flutter build apk --flavor prod -t lib/main_prod.dart; then
+    if flutter build apk; then
         echo "✅ APK build successful."
     else
         echo "⚠️ Git push failed. Please check your remote or authentication."
