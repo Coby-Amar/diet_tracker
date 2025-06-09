@@ -70,10 +70,16 @@ else
     else
         echo "⚠️ Git push failed. Please check your remote or authentication."
     fi
+    echo "Cleaning previous build "
+    if flutter clean; then
+        echo "✅ Clean successful."
+    else
+        echo "⚠️ Clean failed. Please check your terminal"
+    fi
     echo "Trying to build APK..."
     if flutter build apk; then
         echo "✅ APK build successful."
     else
-        echo "⚠️ Git push failed. Please check your remote or authentication."
+        echo "⚠️ APK build failed. Please check your terminal."
     fi
 fi
