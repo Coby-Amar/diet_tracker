@@ -1,4 +1,5 @@
 import 'package:diet_tracker/resources/extensions/dates.extension.dart';
+import 'package:diet_tracker/resources/extensions/numbers.extension.dart';
 import 'package:diet_tracker/resources/models.dart';
 import 'package:diet_tracker/theme.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,9 @@ class ReportsPage extends StatelessWidget {
                           'פחממה',
                         ),
                         Text(
-                          '${dailyLimit.totalCarbohydrates - todaysReport.totalCarbohydrates}',
+                          (dailyLimit.totalCarbohydrates -
+                                  todaysReport.totalCarbohydrates)
+                              .toDisplay,
                         ),
                       ],
                     ),
@@ -55,7 +58,9 @@ class ReportsPage extends StatelessWidget {
                           'חלבון',
                         ),
                         Text(
-                          '${dailyLimit.totalProteins - todaysReport.totalProteins}',
+                          (dailyLimit.totalProteins -
+                                  todaysReport.totalProteins)
+                              .toDisplay,
                         ),
                       ],
                     ),
@@ -65,7 +70,8 @@ class ReportsPage extends StatelessWidget {
                           'שומן',
                         ),
                         Text(
-                          '${dailyLimit.totalFats - todaysReport.totalFats}',
+                          (dailyLimit.totalFats - todaysReport.totalFats)
+                              .toDisplay,
                         ),
                       ],
                     ),

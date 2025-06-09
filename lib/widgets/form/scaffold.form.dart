@@ -65,6 +65,7 @@ class _ScaffoldFormState<M extends BaseModel> extends State<ScaffoldForm<M>> {
                   child: formBuilder(theme, Validations(), model, setState)),
               Container(
                 color: theme.scaffoldBackgroundColor,
+                padding: EdgeInsets.all(10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

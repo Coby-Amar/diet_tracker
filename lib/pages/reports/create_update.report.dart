@@ -81,7 +81,7 @@ class CreateUpdateReportPage extends StatelessWidget with OpenError {
                   return null;
                 },
                 buttonLabel: 'הוסף הרשמה',
-                formBuilder: (theme, validations, model) => [
+                formBuilder: (theme, validations, model, submitForm) => [
                   Row(children: [
                     Expanded(
                       child: AutoCompleteFormField(
@@ -103,6 +103,7 @@ class CreateUpdateReportPage extends StatelessWidget with OpenError {
                         ]),
                         onSaved: (newValue) => model.quantity =
                             double.tryParse(newValue!.trim()) ?? 0,
+                        onFieldSubmitted: (_) => submitForm(context),
                       ),
                     ),
                   ]),

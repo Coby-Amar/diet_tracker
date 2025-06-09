@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
@@ -11,12 +12,24 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+extension CustomProductListSorts on List<Product> {
+  void sortByName() {
+    sort((a, b) => a.name.compareTo(b.name));
+  }
+}
+
+extension CustomReportListSorts on List<Report> {
+  void sortByDate() {
+    sort((a, b) => a.date.compareTo(b.date));
+  }
+}
+
 class AppProvider extends ChangeNotifier {
   final AppDatabase _database = AppDatabase();
   String _searchReportsQuery = '';
   String _searchProductsQuery = '';
-  final reports = <Report>{};
-  final products = <Product>{};
+  final reports = <Report>[];
+  final products = <Product>[];
   DailyLimit _dailyLimit = DailyLimit();
   AppProvider() {
     loadReports();
@@ -29,7 +42,7 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Set<Report> get searchReportsFiltered {
+  List<Report> get searchReportsFiltered {
     if (_searchReportsQuery.isEmpty) {
       return reports;
     }
@@ -37,7 +50,7 @@ class AppProvider extends ChangeNotifier {
         .where((element) => element.date.toDayMonthYear
             .replaceAll('/', '')
             .contains(_searchReportsQuery.replaceAll('/', '')))
-        .toSet();
+        .toList();
   }
 
   set searchProductsQuery(String query) {
@@ -56,12 +69,12 @@ class AppProvider extends ChangeNotifier {
                 OrderingTerm(expression: report.date, mode: OrderingMode.desc)
           ]))
         .get();
-    final loadedReports = <Report>[];
+    reports.clear();
     for (var dbReport in dbReports) {
       final dbReportEntries = await (_database.select(_database.dBReportEntry)
             ..where((entry) => entry.id.isIn(dbReport.entries.items)))
           .get();
-      loadedReports.add(
+      reports.add(
         Report(
           id: dbReport.id,
           date: dbReport.date,
@@ -74,8 +87,6 @@ class AppProvider extends ChangeNotifier {
         ),
       );
     }
-    reports.clear();
-    reports.addAll(loadedReports);
     notifyListeners();
   }
 
@@ -110,6 +121,7 @@ class AppProvider extends ChangeNotifier {
         );
     report.id = id;
     reports.add(report);
+    reports.sortByDate();
     notifyListeners();
   }
 
@@ -137,6 +149,7 @@ class AppProvider extends ChangeNotifier {
     await _database.update(_database.dBReport).replace(dbReport);
     reports.remove(foundPrevReport);
     reports.add(report);
+    reports.sortByDate();
     notifyListeners();
   }
 
@@ -149,6 +162,7 @@ class AppProvider extends ChangeNotifier {
     }
     final foundIndex = reports.firstWhere((element) => element.id == id);
     reports.remove(foundIndex);
+    reports.sortByDate();
     notifyListeners();
   }
 
@@ -191,6 +205,7 @@ class AppProvider extends ChangeNotifier {
         );
     product.id = id;
     products.add(product);
+    products.sortByName();
     notifyListeners();
   }
 
@@ -211,10 +226,9 @@ class AppProvider extends ChangeNotifier {
     if (!wasChanged) {
       return;
     }
-    final foundPrevProduct =
-        products.firstWhere((element) => element.id == product.id);
-    products.remove(foundPrevProduct);
-    products.add(product);
+    final foundProductIndex =
+        products.indexWhere((element) => element.id == product.id);
+    products[foundProductIndex] = product;
     notifyListeners();
   }
 

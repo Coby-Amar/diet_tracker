@@ -57,23 +57,6 @@ class AutoCompleteFormField extends StatelessWidget {
                   separatorBuilder: (context, index) => Divider(),
                   itemBuilder: (BuildContext context, int index) {
                     final option = options.elementAt(index);
-                    // return ListTile(
-                    //   onTap: () {
-                    //     field.didChange(option);
-                    //     onSelected(option);
-                    //   },
-                    //   title: Text(option.name),
-                    //   leading: option.image != null
-                    //       ? Expanded(
-                    //           flex: 1,
-                    //           child: Image.memory(
-                    //             option.image!,
-                    //             // width: 25,
-                    //             // height: 25,
-                    //           ),
-                    //         )
-                    //       : null,
-                    // );
                     return InkWell(
                       onTap: () {
                         field.didChange(option);

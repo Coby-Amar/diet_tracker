@@ -6,8 +6,10 @@ import 'package:diet_tracker/validations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+typedef SubmitForm = void Function(BuildContext context);
+
 typedef FormBuilder<M extends BaseModel> = List<Widget> Function(
-    ThemeData theme, Validations validations, M model);
+    ThemeData theme, Validations validations, M model, SubmitForm submitForm);
 typedef FormOnSuccess<M extends BaseModel> = FutureOr<Object?> Function(
     M model);
 
@@ -29,6 +31,19 @@ class ModelForm<M extends BaseModel> extends StatelessWidget {
     this.canPop = true,
   });
 
+  void submitForm(BuildContext context) async {
+    final result = _formKey.currentState?.validate();
+    if (result == null || !result) {
+      return;
+    }
+    _formKey.currentState?.save();
+    final pop = context.pop;
+    final response = await onSuccess(model);
+    if (canPop) {
+      pop(response);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -37,23 +52,12 @@ class ModelForm<M extends BaseModel> extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...formBuilder(theme, Validations(), model),
+          ...formBuilder(theme, Validations(), model, submitForm),
           const SizedBox(height: 20),
           ElevatedButton.icon(
             icon: Icon(buttonIcon),
             label: Text(buttonLabel),
-            onPressed: () async {
-              final result = _formKey.currentState?.validate();
-              if (result == null || !result) {
-                return;
-              }
-              _formKey.currentState?.save();
-              final pop = context.pop;
-              final response = await onSuccess(model);
-              if (canPop) {
-                pop(response);
-              }
-            },
+            onPressed: () => submitForm(context),
           ),
         ],
       ),
