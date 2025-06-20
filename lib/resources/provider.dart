@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,8 +5,8 @@ import 'package:diet_tracker/resources/database/database.dart';
 import 'package:diet_tracker/resources/database/report.table.dart';
 import 'package:diet_tracker/resources/models.dart';
 import 'package:diet_tracker/resources/extensions/dates.extension.dart';
-import 'package:drift/drift.dart';
 
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,7 +19,7 @@ extension CustomProductListSorts on List<Product> {
 
 extension CustomReportListSorts on List<Report> {
   void sortByDate() {
-    sort((a, b) => a.date.compareTo(b.date));
+    sort((a, b) => b.date.compareTo(a.date));
   }
 }
 
@@ -47,9 +46,11 @@ class AppProvider extends ChangeNotifier {
       return reports;
     }
     return reports
-        .where((element) => element.date.toDayMonthYear
-            .replaceAll('/', '')
-            .contains(_searchReportsQuery.replaceAll('/', '')))
+        .where(
+          (element) => element.date.toDayMonthYear
+              .replaceAll('/', '')
+              .contains(_searchReportsQuery.replaceAll('/', '')),
+        )
         .toList();
   }
 
@@ -65,14 +66,17 @@ class AppProvider extends ChangeNotifier {
   Future<void> loadReports() async {
     final dbReports = await (_database.select(_database.dBReport)
           ..orderBy([
-            (report) =>
-                OrderingTerm(expression: report.date, mode: OrderingMode.desc)
+            (report) => OrderingTerm(
+                  expression: report.date,
+                  mode: OrderingMode.desc,
+                ),
           ]))
         .get();
     reports.clear();
     for (var dbReport in dbReports) {
-      final dbReportEntries = await (_database.select(_database.dBReportEntry)
-            ..where((entry) => entry.id.isIn(dbReport.entries.items)))
+      final dbReportEntries = await (_database.select(
+        _database.dBReportEntry,
+      )..where((entry) => entry.id.isIn(dbReport.entries.items)))
           .get();
       reports.add(
         Report(
@@ -93,15 +97,15 @@ class AppProvider extends ChangeNotifier {
   Future<List<int>> _addReportEntries(Set<ReportEntry> entries) async {
     final addedEntries = <int>[];
     for (final entry in entries) {
-      final id = await _database
-          .into(_database.dBReportEntry)
-          .insert(DBReportEntryCompanion.insert(
-            quantity: entry.quantity,
-            carbohydrates: entry.carbohydrates,
-            proteins: entry.proteins,
-            fats: entry.fats,
-            productId: entry.productId,
-          ));
+      final id = await _database.into(_database.dBReportEntry).insert(
+            DBReportEntryCompanion.insert(
+              quantity: entry.quantity,
+              carbohydrates: entry.carbohydrates,
+              proteins: entry.proteins,
+              fats: entry.fats,
+              productId: entry.productId,
+            ),
+          );
       entry.id = id;
       addedEntries.add(id);
     }
@@ -131,8 +135,10 @@ class AppProvider extends ChangeNotifier {
 
     // Delete then Add Report Entries
     await (_database.delete(_database.dBReportEntry)
-          ..where((entry) =>
-              entry.id.isIn(foundPrevReport.entries.map((entry) => entry.id))))
+          ..where(
+            (entry) =>
+                entry.id.isIn(foundPrevReport.entries.map((entry) => entry.id)),
+          ))
         .go();
     await _addReportEntries(report.entries);
 
@@ -144,7 +150,8 @@ class AppProvider extends ChangeNotifier {
       totalProteins: report.totalProteins,
       totalFats: report.totalFats,
       entries: DBReportEntries(
-          items: report.entries.map((entry) => entry.id).toList()),
+        items: report.entries.map((entry) => entry.id).toList(),
+      ),
     );
     await _database.update(_database.dBReport).replace(dbReport);
     reports.remove(foundPrevReport);
@@ -154,8 +161,9 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<void> deleteReport(int id) async {
-    final wasDeleted = await (_database.delete(_database.dBReport)
-          ..where((e) => e.id.equals(id)))
+    final wasDeleted = await (_database.delete(
+      _database.dBReport,
+    )..where((e) => e.id.equals(id)))
         .go();
     if (wasDeleted < 1) {
       return;
@@ -169,8 +177,10 @@ class AppProvider extends ChangeNotifier {
   Future<void> loadProducts() async {
     final response = await (_database.select(_database.dBProduct)
           ..orderBy([
-            (product) =>
-                OrderingTerm(expression: product.name, mode: OrderingMode.asc)
+            (product) => OrderingTerm(
+                  expression: product.name,
+                  mode: OrderingMode.asc,
+                ),
           ]))
         .get();
     products.clear();
@@ -263,5 +273,28 @@ class AppProvider extends ChangeNotifier {
     _dailyLimit = dailyLimit;
     File(join(rootPath.path, 'daily_limit.json'))
         .writeAsStringSync(jsonEncode(dailyLimit.toJson()));
+  }
+
+  Future<void> exportProducts() async {
+    final products = await (_database.select(_database.dBProduct)
+          ..orderBy([
+            (product) => OrderingTerm(
+                  expression: product.name,
+                  mode: OrderingMode.asc,
+                ),
+          ]))
+        .get();
+    final dir = await getApplicationDocumentsDirectory();
+    final exportFile = File(
+      join(
+        dir.path,
+        'diet_tracker_${DateTime.now().toIso8601String()}.json',
+      ),
+    );
+    final jsonData = jsonEncode(
+      products.map((product) => product.toJson()).toList(),
+    );
+    exportFile.createSync();
+    exportFile.writeAsStringSync(jsonData);
   }
 }

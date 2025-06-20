@@ -20,7 +20,6 @@ class AppDatabase extends _$AppDatabase {
       name: 'diet_tracker_db',
       native: const DriftNativeOptions(
         databaseDirectory: getApplicationDocumentsDirectory,
-        // databaseDirectory: getApplicationSupportDirectory,
       ),
     );
     return db;
@@ -53,11 +52,6 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration {
     return MigrationStrategy(
       beforeOpen: (openingDetails) async {
-        // final m = Migrator(this);
-        // for (final table in allTables) {
-        //   await m.deleteTable(table.actualTableName);
-        //   await m.createTable(table);
-        // }
         if (openingDetails.wasCreated) {
           await _insertBaseProducts();
         }
